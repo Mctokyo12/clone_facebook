@@ -1,6 +1,7 @@
 import { UPDATE_PROFILE } from "../actions/user.action";
 
-const initialState = !localStorage.getItem("user") ? {} : JSON.parse(localStorage.getItem('user'));
+
+const initialState = !window.localStorage.getItem("user") ? "" : JSON.parse(localStorage.getItem('user'));
 
 const userReducer = (state = initialState , action)=>{
 

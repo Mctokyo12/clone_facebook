@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Friend;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Laravel\Facades\Image;
 use Ramsey\Uuid\Uuid;
 use stdClass;
+use Symfony\Component\String\Inflector\FrenchInflector;
 
 class UserController extends Controller
 {
@@ -18,6 +21,63 @@ class UserController extends Controller
         $user = User::where("userid",$id)->first();
         return response()->json($user);
     }
+
+    public  function getAllUser(int $id) 
+    {   
+        $friends = Friend::select("*")->get();
+        if (is_array($friends) and empty($friends)) {
+            $alluser = User::where("userid" , "!=", $id);
+        }else{
+            $alluser = User::whereNotIn("userid" , function (Builder $query)  {
+            $query->select("sender")->from("friends");
+            })->whereNotIn("userid" , function (Builder $query)  {
+                $query->select("receIver")->from("friends");
+            })->where("userid" , "!=" , $id)->get();
+        }
+        
+        return response()->json($alluser);
+    }
+
+    public  function getSender(int $id)
+    {
+        
+        // $FriendSender =  Friend::select("status" ,"sender")->where("receiver" , $id)->where("status" , 1)->get();
+       $FriendSender=Friend::join("users","friends.sender", "=","users.userid")->select("users.*" , "friends.status" , "friends.receiver")
+        ->where("receiver",$id)->where('status',1)->get();
+        // $users = new stdClass();
+        // foreach ($FriendSender as $item) {
+        //     $users = User::select("*")->where("userid" , $item->sender)->get();
+        // }
+
+        return response()->json($FriendSender);
+    }
+
+    public   function friends() 
+    {
+       $friends = Friend::select("*")->get();
+       return response()->json($friends);
+    }
+
+    public  function getFriend(Request $request, int $id) : JsonResponse
+    {   
+        $action = $request->input("action");
+   
+        if ($action === "receiver" ) {
+            $friend =  Friend::join("users" , "friends.sender" ,"=" , "users.userid")
+            ->select("users.*")->where("friends.receiver",$id)
+            ->where("status" , 2)->get(); 
+            
+        }else {
+            $friend =  Friend::join("users" , "friends.receiver" ,"=" , "users.userid")
+            ->select("users.*")->where("friends.sender",$id)
+            ->where("status" , 2)->get();
+        }
+       
+
+       
+        return response()->json($friend);
+    }
+
 
     public function UpdateProfile(Request $request,int $id){
 
@@ -175,7 +235,15 @@ class UserController extends Controller
     {
         $id = (int) $request->input("sender");
         $receiver = (int) $request->input("receiver"); 
-        
+        if(Friend::where("sender" , $id)->where("receiver" , $receiver)->exists()){
+            Friend::where("sender" , $id)->where("receiver" , $receiver)
+            ->update([
+                "status" => 1
+            ]);
+
+            return response()->json(["status"=>1]);
+            exit;
+        }
        
         $instance = Friend::create([
             "sender"=>$id,
@@ -192,12 +260,13 @@ class UserController extends Controller
         $sender = (int) $request->input("sender");
         $receiver = (int) $request->input("receiver");
 
-        $result = Friend::where("sender" , $sender)->where("receiver" , $receiver)
+        $result = Friend::where(["sender" => $sender , "receiver"=> $receiver])
+        ->orwhere(["sender" => $receiver , "receiver"=> $sender])
         ->update([
             "status" => $status
         ]);
 
-       return response()->json(["status"=>$result] ,200);
+       return response()->json(["status"=>$status] ,200);
         
 
     }
@@ -205,18 +274,19 @@ class UserController extends Controller
 
     public function cancel_request(Request $request)
     {
-        $status = 3;
+        $status = 0;
         $sender = (int) $request->input("sender");
         $receiver = (int) $request->input("receiver");
-
-        $result = Friend::where("sender" , $sender)->where("receiver" , $receiver)
+        $result = Friend::where(["sender" => $sender , "receiver"=> $receiver])
         ->update([
             "status" => $status
         ]);
 
-       return response()->json(["status"=>$result] ,200);
+        if ($result) {
+            return response()->json(["status"=>$status] ,200);
+        }
+      
     }
-
 
     public function delete_request(Request $request)
     {
@@ -224,13 +294,16 @@ class UserController extends Controller
         $sender = (int) $request->input("sender");
         $receiver = (int) $request->input("receiver");
 
-        $result = Friend::where("sender" , $sender)->where("receiver" , $receiver)
+        $result = Friend::where(["sender" => $sender , "receiver"=> $receiver])
+        ->orwhere(["sender" => $receiver , "receiver"=> $sender])
         ->update([
             "status" => $status
         ]);
 
-       return response()->json(["status"=>$result] ,200);
+       return response()->json(["status"=>$status] ,200);
     }
+
+
 
 
 }

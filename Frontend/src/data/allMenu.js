@@ -1,7 +1,4 @@
 
-
-
-
 export const menu = [
   {
     name: "Campus",
@@ -130,6 +127,7 @@ export const create = [
   {
     name: "Post",
     icon: "m_post_icon",
+  
   },
   {
     name: "Story",
@@ -165,3 +163,31 @@ export const create = [
     icon: "m_post_job",
   },
 ];
+
+export const friendMenu = [
+  {
+    name:"Home",
+    icon:"friends_home_icon",
+    link: "home"
+  },
+  {
+    name:"Friend Requests",
+    icon:"friends_requests_icon",
+    link: "requests"
+  },
+  {
+    name:"Suggestions",
+    icon:"friends_suggestions_icon",
+    link: "suggestions"
+  },
+  {
+    name:"All friend",
+    icon:"all_friends_icon",
+    link: "list"
+  },
+  {
+    name:"Birthdays",
+    icon:"birthdays_icon",
+    link: "birthday"
+  }
+]

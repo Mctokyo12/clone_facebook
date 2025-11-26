@@ -6,8 +6,8 @@ import * as yup from "yup"
 import axios from 'axios';
 import{ DotLoader } from 'react-spinners';
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
-import {useNavigate} from 'react-router';
-import { use } from 'react';
+import { useNavigate} from 'react-router';
+
 
 
 axios.defaults.withCredentials = true;
@@ -54,6 +54,7 @@ const LoginForm = () => {
             setloading(false);
             if(!error){
                 naviagte("/");
+                // <Navigate to="/" />
             }
            
         } catch (error) {

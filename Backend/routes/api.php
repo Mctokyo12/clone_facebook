@@ -32,10 +32,17 @@ Route::delete("/post/comment/delete/{id}" , [CommentController::class , 'destroy
 
 // les utilisateurs
 Route::get("/user/{id}" ,[UserController::class , 'getUser']);
+Route::get("/alluser/{id}" , [UserController::class , 'getAllUser']);
 Route::post('/user/update-profile/{id}', [UserController::class ,'UpdateProfile']);
 Route::post("/user/{id}/picture" , [UserController::class , 'GetUserPicture']);
 
+Route::get("/get-sender/{id}",[UserController::class, "getSender"]);
+Route::get("/friends/",[UserController::class, "friends"]);
+
+Route::post("/get-friend/{id}",[UserController::class, "getFriend"]);
+
 Route::post("/addFriend",[UserController::class, "send_request_follower"]);
+
 Route::put("/accept-request",[UserController::class, "confirme_request_follower"]);
 Route::put("/cancel-request",[UserController::class,  "cancel_request"]);
 Route::put("/delete-request" , [UserController::class , "delete_request"]);

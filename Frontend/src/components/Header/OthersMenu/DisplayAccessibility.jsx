@@ -2,7 +2,7 @@ import React from 'react';
 
 const DisplayAccessibility = ({setvisible}) => {
     return (
-        <div id="display" className="gap-2   px-4 py-4 w-[95%] sm:w-2/3 md:w-[50%] lg:w-[33%] xl:w-[26%] h-[77%]  fixed top-32 right-4 sm:top-16   rounded-lg overflow-y-auto dark:bg-dark-second dark:text-dark-text bg-gray-200 shadow">
+        <div id="display" className="gap-2   px-4 py-4 w-[95%] sm:w-2/3 md:w-[50%] lg:w-[33%] xl:w-[26%] h-[77%]  fixed top-32 right-4 sm:top-16   rounded-lg overflow-y-auto dark:bg-dark-second dark:text-dark-text bg-light-primary shadow">
             {/* <!-- Header Display --> */}
             <div className="flex items-center gap-4 mb-2 ">
                 <span onClick={()=>setvisible(0)} className="back display rounded-full text-xl relative text-center grid place-items-center py-2 px-2   shadow  dark:hover:bg-dark-third dark:bg-transparent dark:text-dark-text  bg-gray-200 cursor-pointer">

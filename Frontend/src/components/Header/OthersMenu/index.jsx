@@ -3,17 +3,24 @@ import Support from './Support';
 import Setting from './Setting';
 import DisplayAccessibility from './DisplayAccessibility';
 import { ProfilePicture } from '../../../functions/ProfilePicture';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 const UserMenu = ({user}) => {
     const [visible , setvisible] = useState(0);
     const profile = ProfilePicture(user);
+    const navigate = useNavigate()
+    const logout = ()=>{
+        if (localStorage.getItem("user")) {
+            localStorage.removeItem("user" , "");   
+            navigate("/login")
+        }
+    }
 
 
     return (
         <> 
            {visible==0 && 
-                <div id="profile" className="gap-2  px-4 py-4 w-[95%] sm:w-2/3 md:w-[50%] lg:w-[33%] xl:w-[26%] h-[65%]  fixed top-32 right-4 sm:top-16   rounded-lg overflow-y-auto dark:bg-dark-second dark:text-dark-text bg-gray-200 shadow">
+                <div id="profile" className="gap-2  px-4 py-4 w-[95%] sm:w-2/3 md:w-[50%] lg:w-[33%] xl:w-[26%] h-[65%]  fixed top-32 right-4 sm:top-16   rounded-lg overflow-y-auto dark:bg-dark-second dark:text-dark-text  bg-light-primary shadow">
 
                     <Link to={`/profile/${user.userid}`} className="flex items-center gap-4  px-2 py-2 dark:hover:bg-dark-third hover:bg-gray-200 cursor-pointer rounded-lg ">
                         <div className="h-16 w-16 overflow-hidden">
@@ -75,7 +82,7 @@ const UserMenu = ({user}) => {
                         </span>
                     </div>
 
-                    <div className="flex gap-3 justify-between items-center px-2 py-2 dark:hover:bg-dark-third dark:hover:bg-opacity-50 rounded-lg hover:bg-gray-200 cursor-pointer">
+                    <div  onClick={logout}  className="flex gap-3 justify-between items-center px-2 py-2 dark:hover:bg-dark-third dark:hover:bg-opacity-50 rounded-lg hover:bg-gray-200 cursor-pointer">
                         <div className="flex items-center gap-3">
                             <span className="rounded-full text-xl relative text-center grid place-items-center py-2 px-2   shadow  dark:bg-dark-third dark:text-dark-text  bg-gray-200 cursor-pointer">
                                 <i className="bx bx-log-out "></i>
