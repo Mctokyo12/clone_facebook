@@ -9,7 +9,7 @@ const RegisterInput = ({type , placeholder , name ,register , errors , error}) =
     return (
         <div className={`flex gap-4 ${errors && name=='email' || name=='password' ? "md:mb-4" :"" }  h-full relative justify-center flex-col w-full   items-center`}>
             
-            <input type={type} placeholder={placeholder}  name={name} className={`placeholder:text-lg border ${!errors && error == ""  ? 'border focus:border-blue-500':'border-[#b94a48]'} outline-none    dark:border-dark-second bg-transparent rounded-md px-2 w-full py-2`} {...register(name)}/>
+            <input type={type} placeholder={placeholder}  name={name} className={`placeholder:text-lg border ${!errors && error == ""  ? 'border focus:border-blue-500':'border-[#b94a48]'} outline-none    dark:border-dark-text bg-transparent rounded-md px-2 w-full py-2`} {...register(name)}/>
             
             <div 
                 className={ 

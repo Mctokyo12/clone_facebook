@@ -15,9 +15,9 @@ const PostMenu =  ({post ,  setEditPost , setPostMenu , setcurrentPost ,setPostD
     
 
     return (
-        <div className="absolute w-80 bg-light-primary  z-10  shadow-box px-2 py-2  right-10 top-14 rounded-lg">
+        <div className="absolute  w-80 bg-light-primary   dark:bg-dark-third z-10 dark:text-dark-text  shadow-box px-2 py-2  right-10 top-14 rounded-lg">
             
-            <img src="/icons/Arrow.svg" alt=""  className="size-10 absolute -right-2 -top-4 rotate-90 "/>
+            <img src={`/icons/Arrow.svg`} alt=""  className="size-10 absolute -right-2 -top-4 rotate-90 "/>
             
             <ul>
                 <MenuItem icon={"pin_icon"} title={"Pin Post"}/>

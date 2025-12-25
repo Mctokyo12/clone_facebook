@@ -84,7 +84,7 @@ const ImagePreview = ({showImagePreview , setshowImagePreview  , setCurrentBackg
                             {
                                 imagesPreview.length > 0  &&
                                 imagesPreview.map((image , index)=>(
-                                    image.length > 50 ? 
+                                    image.length > 70 ? 
                                         <img src={`${image}`} key={index} alt=""  />  
                                     :
                                     <img src={`${import.meta.env.VITE_URL_BACKEND}/storage/${image}`} key={index} alt=""  />

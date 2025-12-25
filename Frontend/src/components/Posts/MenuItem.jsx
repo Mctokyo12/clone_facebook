@@ -1,7 +1,7 @@
 const MenuItem = ({icon , title ,subtitle , image})=>{
     return(
-        <li className="rounded-lg px-2 py-2 hover:bg-light-secondary cursor-pointer dark:bg-dark-third flex items-center gap-4">
-            {image ? <img src={image} alt="" srcset="" /> : <span className={icon}></span>}
+        <li className="rounded-lg px-2 py-2 hover:bg-light-secondary cursor-pointer dark:text-white  dark:hover:bg-dark-text/50  flex items-center gap-4">
+            {image ? <img src={image} alt="" srcset="" /> : <span className={`${icon} dark:invert-100`}></span>}
             {subtitle ? "" : <h4>{title}</h4>}
 
             {subtitle && 

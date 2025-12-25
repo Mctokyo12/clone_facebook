@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Like;
 use App\Models\Post;
+use App\Models\Share;
+use App\Models\User;
+use App\Notifications\SocialNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Laravel\Facades\Image;
-
+use App\Http\Controllers\UserController;
 
 
 class PostController extends Controller
@@ -27,9 +30,10 @@ class PostController extends Controller
         
         foreach ($posts as $post) {
             $post->likes = Like::select("postid" ,"userid" , "content" , "type")->where('postid' , $post->postid)->get();
-            $post->comments = Comment::join("users" , "comments.userid" , '=' , 'users.userid')->select('comments.commentid','comments.postid','comments.userid','comments.comment',"users.lastname" , "users.firstname" , "users.profile_picture" , "users.gender")->where('postid' , $post->postid)->orderby("comments.id" ,"desc")->get();
+            $post->comments = Comment::join("users" , "comments.userid" , '=' , 'users.userid')->select('comments.commentid','comments.postid','comments.userid','comments.comment','comments.created_at',"users.lastname" , "users.firstname" , "users.profile_picture" , "users.gender")->where('postid' , $post->postid)->orderby("comments.id" ,"desc")->get();
             $post->post = json_decode($post->post);
             $post->files = json_decode($post->files);
+            $post->share = Share::where("postid" , $post->postid)->get()->count();
             $result[] = $post;
         }
 
@@ -195,10 +199,14 @@ class PostController extends Controller
                   
                 } 
 
+            }else{
+                $images = Post::select("files")->where("postid", $id)->first();
+                $images = json_decode($images->files);
+                $uploadeFiles = $images;
+
             }
 
             
-
             if($request->has('postBackground')){
                 if($request->filled('post')){
                     $post =  json_encode([$request->input("post") , $request->input("postBackground")])        ;
@@ -242,14 +250,25 @@ class PostController extends Controller
                 }
             }
         }
-
+        
         $delete = Post::where('postid' , $id)->delete();
+        Share::where("postid" , $id)->delete();
         return response()->json(['status'=>$delete]);
     }
 
     public function likePost(Request $request , string $id) {
 
        $types = ["angry" , "haha" , "like" , "sad" , "love" ,"wow"];
+       $actor_name = UserController::getOneUser($request->input('userid'));
+
+        $like_notification = [
+            "postid"=>$id,
+            "actor_id"=> $request->input('userid'),
+            'actor_name' => $actor_name->lastname ." ". $actor_name->firstname,
+            'message' => " a like votre publication"
+        ];
+
+       $user = $this->getUserByPost($id);
 
        if(in_array($request->type , $types)){
             $like =  Like::where("postid" , $id)
@@ -269,12 +288,23 @@ class PostController extends Controller
                         ->update([
                             'type' => $request->input("type"),
                         ]);
+
+                        if ($user->userid !== $request->input('userid')) {
+                            $user->notify(new SocialNotification('like' , $like_notification));
+                        }
+                        
+
                     }
                 }else{
                     Like::where("postid" , "=" , $id , 'and' ,'userid' , "=" , $request->input("userid"))
                     ->update([
                         'type'=> $request->input("type"),
                     ]);
+
+                    if ($user->userid !== $request->input('userid')) {
+                        $user->notify(new SocialNotification('like' , $like_notification));
+                    }
+
                 }
 
             }else{
@@ -284,6 +314,10 @@ class PostController extends Controller
                     'type' => $request->input('type'),
                     'content' => $request->input('content') 
                 ]);
+
+                if ($user->userid !== $request->input('userid')) {
+                    $user->notify(new SocialNotification('like' , $like_notification));
+                }
             }
        }
        
@@ -308,6 +342,64 @@ class PostController extends Controller
         
         return $path;
                         
+    }
+
+    public  static function getUserByPost(string $postid): User 
+    {
+        $post =  Post::where('postid' , $postid)->get()->first();
+        $user = User::where('userid', $post->userid)->first();
+        return $user;
+    }
+
+    public  function Shared(Request $request) 
+    {
+        $postid = $request->input("postid");
+        $userid = $request->input("userid");
+        $share_tye = $request->input('share_type');
+        $result = Share::create([
+            "postid"=>$postid,
+            "userid" =>$userid,
+            "share_tye" => $share_tye
+        ]);
+
+        if ($result) {
+            if ($share_tye == "post") {
+                $post = Post::where("postid",$postid)->first();
+                $content = null;
+                if ($request->filled("content")) {
+                    $content = json_encode([$request->input("content")]);
+                }
+
+                $newpost =  Post::create([
+                    'postid' => Uuid::uuid4(),
+                    'userid'=> $userid,
+                    'post' => $content,
+                    'type'=> $post->type,
+                    "is_shared"=>1,
+                    "post_share_id"=>$postid
+                ]);
+
+                $user = User::where('userid' , $post->userid)->first();
+                if($user->userid !== $userid){
+                    $actor_name = UserController::getOneUser($userid);
+                    $share_notification = [
+                        'postid' => $postid,
+                        'actor_id'=> $userid,
+                        'actor_name' => $actor_name->lastname ." ". $actor_name->firstname,
+                        'message' => " a partage votre publication"
+                    ];
+
+                    $user->notify(new SocialNotification("share", $share_notification));
+                }
+            
+                return response()->json($newpost);
+            }
+                
+
+            
+        }
+
+
     }
 
 }

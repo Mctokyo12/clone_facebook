@@ -121,36 +121,34 @@ const RegisterForm = () => {
                 
                 const datas = response.data;
                 
-                for (const [key , value] of Object.entries(datas)) {
-                    seterror({...error , [key]: value[0]});
-
-
-
-                }
-
                 setloading(false);
                 
-                if(!error){
+                if(error.email == "" && error.password == "" && error.firstname == "" && error.lastname == ""){
                     navigate("/");
                 }
-                
          
             } catch (error) {
-                console.log(error)
+                for (const [key , value] of Object.entries(error.response.data)) {
+                    seterror({...error , [key]: value[0]});
+                }
+                console.log(error);
+                 
                 setloading(false);
             }
+            
             setdateerror("")
             
         }
 
         
     }
+    console.log(error);
 
     return (
         <>
             <div className="absolute text-gray-500 mt-16 sm:mt-8   mb-4 dark:text-dark-text py-4 px-4 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-lg  mx-4 md:mx-0   w-[28rem] rounded-lg bg-white dark:bg-dark-second">
         
-                <h4 className="text-center text-2xl font-bold pb-4 text-black">Creer un compte</h4>
+                <h4 className="text-center text-2xl font-bold pb-4 text-black dark:text-white">Creer un compte</h4>
                 
                 <form action="" method="post"  className="flex flex-col gap-4 px-3 py-2 w-full" onSubmit={handleSubmit(onSubmit)}>
 

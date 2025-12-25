@@ -5,15 +5,15 @@ const GenderSelect = ({genderror , register}) => {
         <div className='flex flex-col relative'>
             <span className="text-sm text-start mb-2 ">Gender</span>
             <div className="flex items-center gap-2 justify-between">
-                <span className={`border ${genderror ? "border-[#b94a48]" : "border-gray-300 "}   flex items-center justify-between placeholder:text-lg dark:border-dark-second bg-transparent rounded-md px-2 w-full  py-2`}>
+                <span className={`border ${genderror ? "border-[#b94a48]" : "border-gray-300 "}   flex items-center justify-between placeholder:text-lg dark:border-dark-text bg-transparent rounded-md px-2 w-full  py-2`}>
                     <label >Femme</label>
                     <input type="radio" name="gender" value="Female" {...register("gender")} />
                 </span>
-                <span className={`border ${genderror ? "border-[#b94a48]" : "border-gray-300 "} flex items-center justify-between placeholder:text-lg dark:border-dark-second bg-transparent rounded-md px-2 w-full  py-2`}>
+                <span className={`border ${genderror ? "border-[#b94a48]" : "border-gray-300 "} flex items-center justify-between placeholder:text-lg dark:border-dark-text bg-transparent rounded-md px-2 w-full  py-2`}>
                     <label >Homme</label>
                     <input type="radio" name="gender"   value="Male"  {...register("gender")}/>
                 </span>
-                <span className={`border ${genderror ? "border-[#b94a48]" : "border-gray-300 "}  flex items-center justify-between placeholder:text-lg dark:border-dark-second bg-transparent rounded-md px-2 w-full  py-2`}>
+                <span className={`border ${genderror ? "border-[#b94a48]" : "border-gray-300 "}  flex items-center justify-between placeholder:text-lg dark:border-dark-text bg-transparent rounded-md px-2 w-full  py-2`}>
                     <label >Personnalise</label>
                     <input type="radio" value="custom" name="sex" />
                 </span>

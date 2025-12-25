@@ -8,6 +8,7 @@ import { update_profile } from '../../actions/user.action';
 import { getPosts } from '../../actions/post.action';
 import axios from 'axios';
 import { PulseLoader } from 'react-spinners';
+import Error from '../Errors';
 
 
 const Cover = ({user}) => {
@@ -22,8 +23,11 @@ const Cover = ({user}) => {
     const [rotation, setRotation] = useState(0)
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
     const [file,setFile] = useState(null);
+    const [error ,setError] = useState("");
+    
     const [isUploading , setIsuploading] = useState(false)
     const dispatch = useDispatch();
+    
     
     
     const onCropComplete = (croppedArea , croppedAreaPixels) =>{
@@ -40,16 +44,15 @@ const Cover = ({user}) => {
             console.log('donee', { croppedImage })
             setCroppedImage(croppedImage)
         } catch (e) {
-            console.error(e)
+            setError("une erreur s'est produit")
+            
         }
     }
 
     const coverRef = useRef(null);
     const [width, setWidth] = useState();
     useEffect(() => {
-        setWidth(coverRef.current.clientWidth);
-        // console.log(coverRef.current.clientWidth);
-        
+        setWidth(coverRef.current.clientWidth);        
     }, [window.innerWidth]);
 
     const handleUpload = (e)=>{
@@ -80,17 +83,6 @@ const Cover = ({user}) => {
                     "userid":user.userid,
                     "is_cover_page": 1
                 }
-
-                // await dispatch(update_profile(uploadData , user.userid))
-                // dispatch(getPosts());
-                // setImageSrc("");
-
-                // const   response  =   await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/user/update-profile/${user.userid}` , uploadData , {
-                //     headers:{
-                //         'Content-Type': 'multipart/form-data'
-                //     }
-                // })
-
                 
             }else{
                 const uploadData = {
@@ -106,19 +98,12 @@ const Cover = ({user}) => {
                 setUploadSelect(false);
                 setImageSrc("");
 
-                // const   response  =   await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/user/update-profile/${user.userid}` , uploadData , {
-                //     headers:{
-                //         'Content-Type': 'multipart/form-data'
-                //     }
-                // })
-                // console.log(response);
-        
             }
 
             setIsuploading(false)
 
         } catch (error) {
-            console.log(error);
+            setError("une erreur s'est produit")
         }
 
 
@@ -127,8 +112,6 @@ const Cover = ({user}) => {
     
 
     }
-
-    console.log(width);
     
 
     return (
@@ -136,7 +119,7 @@ const Cover = ({user}) => {
             <div className={`w-full h-[350px] relative rounded-lg   dark:bg-dark-text bg-gray-200` }  ref={coverRef} >
 
                 {imageSrc && 
-                    <div  className="fixed  w-full  z-999 top-16 left-0 flex px-4 items-center justify-between  h-16 bg-gray-700/55  text-white dark:text-dark-text">
+                    <div  className="fixed  w-full  z-99 top-16 left-0 flex px-4 items-center justify-between  h-16 bg-gray-700/55  text-white dark:text-dark-text">
                         <div className="flex gap-2">
                             <span className="public_icon invert"></span>
                             <span className=" font-semibold"> Votre photo de couverture est publie</span>
@@ -147,7 +130,7 @@ const Cover = ({user}) => {
                                 <span className="font-semibold"  onClick={()=>setImageSrc("")}>Annuler</span>
                             </div>
 
-                            <div className=" w-56 h-10 text-sm cursor-pointer text-white  flex items-center rounded-lg justify-center  font-semibold px-6 py-2 dark:hover:bg-dark-main  dark:text-dark-text bg-blue">
+                            <div className=" w-56 h-10 text-sm cursor-pointer text-white  flex items-center rounded-lg justify-center  font-semibold px-6 py-2 dark:hover:bg-dark-main   bg-blue">
                                 {isUploading ? 
                                     <PulseLoader  size={8} color='#fff'/> :
                                     <span className="" onClick={(e)=>handleCoverPicture(e , "is_cover_page")}>Enregistrer les modification</span>
@@ -161,7 +144,7 @@ const Cover = ({user}) => {
                 }
  
 
-                <div className={`w-full h-full  relative`}>
+                <div className={`w-full h-full  relative  `}>
                     {imageSrc &&
                         <Cropper
                             image={imageSrc}
@@ -178,13 +161,14 @@ const Cover = ({user}) => {
                         />
                     }
                     
-
-                    <div onClick={()=>setUploadSelect(!UPloadSelect)} className="flex items-center absolute right-4  cursor-pointer bottom-4  px-4 py-2 w-fit z-20 gap-2 bg-white rounded-lg dark:bg-dark-main dark:text-white">
-                        <span className="mt-2">
-                            <i className="bx bxs-camera text-xl"></i>
-                        </span>
-                        <span className="text-sm">Add Cover Photo</span>
-                    </div>
+                    {currentUser.userid == user.userid && 
+                        <div onClick={()=>setUploadSelect(!UPloadSelect)} className="flex items-center absolute right-4  cursor-pointer bottom-4 z-20  px-4 py-2 w-fit gap-2 bg-white rounded-lg dark:bg-dark-main dark:text-white">
+                            <span className="mt-2">
+                                <i className="bx bxs-camera text-xl"></i>
+                            </span>
+                            <span className="text-sm">Add Cover Photo</span>
+                        </div>
+                    }
 
                     {UPloadSelect && 
 
@@ -195,18 +179,18 @@ const Cover = ({user}) => {
                                     setUploadSelect(false)
                                     setVisible(true)
                                 }} 
-                                className="flex items-center gap-3 px-2 py-2 hover:bg-light-third rounded-lg"
+                                className="flex items-center gap-3 px-2 py-2 hover:bg-light-third dark:hover:bg-dark-third rounded-lg"
                             >
                                 <span>
-                                    <i className="photo_icon text-xl"></i>
+                                    <i className="photo_icon invert-100"></i>
                                 </span>
                                 <span>Select Photo</span>
                             </div>
                             
                             
-                            <div className="flex items-center gap-3 px-2 py-2 hover:bg-light-third rounded-lg">
+                            <div className="flex items-center gap-3 px-2 py-2 hover:bg-light-third dark:hover:bg-dark-third rounded-lg">
                                 <span>
-                                    <i className="upload_icon text-xl"></i>
+                                    <i className="upload_icon invert-100"></i>
                                 </span>
                                 <span className="text-sm">Upload Photo</span>
                                 <input onChange={(e)=>handleUpload(e)} type="file" name="cover_photo" className="absolute w-full opacity-0 cursor-pointer"/ >
@@ -215,7 +199,7 @@ const Cover = ({user}) => {
                         </div>
                     }
                     {!imageSrc &&  
-                        <div className='overflow-hidden absolute w-full    h-[350px] '>
+                        <div className='overflow-hidden absolute w-full  z-0 h-[350px] '>
                             <img src={cover} alt=""  className=' object-cover w-full block' />
                             
                         </div>
@@ -230,6 +214,7 @@ const Cover = ({user}) => {
 
 
             </div>
+            {error && <Error error={error} setError={setError}/>}
            
         </>
     );

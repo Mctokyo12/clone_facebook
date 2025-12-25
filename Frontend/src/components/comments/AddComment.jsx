@@ -4,7 +4,7 @@ import { add_comment } from '../../actions/post.action';
 import { useDispatch } from 'react-redux';
 import { ProfilePicture } from '../../functions/ProfilePicture';
 
-const AddComment = ({postid , user}) => {
+const AddComment = ({postid , user , setError}) => {
     const [comment , setComment] = useState("");
     const dispatch = useDispatch();
     const profile = ProfilePicture(user);
@@ -21,7 +21,7 @@ const AddComment = ({postid , user}) => {
             setComment("");
 
         } catch (error) {
-            console.log(error);
+            setError("Une erreur s'est produit. Veuillez Ressayer")
         }
 
     }

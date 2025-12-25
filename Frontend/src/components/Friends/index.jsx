@@ -5,28 +5,29 @@ import Card from "./Card";
 import { fetch, FillArray, RemoveDouble } from "../../functions/Fetch";
 import { friendMenu } from "../../data/allMenu";
 import FriendMenu from "./FriendMenu";
+import { HashLoader} from "react-spinners";
 
 
 const Friend = ({userid , FriendQuery})=>{
 
-    const [users , setUsers] = useState([]);
-    const [friendSender , setFriendSender] = useState([]);
-
+    const [users , setUsers] = useState([]); // personne que vous pouvez envoyer des demandes
+    const [friendSender , setFriendSender] = useState([]); // personne qui envoie des demandes
+    const [loader, setLoader] = useState(false)
     useEffect(()=>{
         
-        fetch(`${import.meta.env.VITE_URL_BACKEND}/api/alluser/${userid}`, setUsers)
-        fetch(`${import.meta.env.VITE_URL_BACKEND}/api/get-sender/${userid}` , setFriendSender);
+        fetch(`${import.meta.env.VITE_URL_BACKEND}/api/alluser/${userid}`, setUsers , setLoader)
+        fetch(`${import.meta.env.VITE_URL_BACKEND}/api/get-sender/${userid}` , setFriendSender , setLoader);
         
     } , [])
 
     return (
         <>
             <Header/>
-            <div className="flex items-start mt-16">
+            <div className="flex items-start flex-col lg:flex-row max-lg:mt-16">
 
 
                 {/* <!-- sidebar friend --> */}
-                    <div className=" fixed  h-screen overflow-y-auto py-3 px-3 w-[25%] dark:bg-dark-second dark:text-dark-text  bg-white text-gray-500 ">
+                    <div className=" hidden lg:block fixed  top-16 h-screen overflow-y-auto py-3 px-3 w-[25%] dark:bg-dark-second dark:text-dark-text  bg-white text-gray-500 ">
                         <div className="flex justify-between items-center w-full">
                             <h3 className="font-semibold text-xl">Friends</h3>
                             <span className="rounded-full text-xl relative text-center grid place-items-center py-2 px-2  mr-2 shadow  dark:hover:bg-dark-third dark:bg-transparent dark:text-dark-text  bg-gray-200 cursor-pointer">
@@ -50,8 +51,8 @@ const Friend = ({userid , FriendQuery})=>{
                 {/* <!-- end sidebar friend --> */}
 
                 {/* <!-- Main Friend --> */}
-                <div className="px-2 ml-96 py-12  mx-10 w-[90%]  ">
-                    <div className="dark:text-dark-text">
+                <div className="px-2 lg:ml-96 py-12 mt-10  max-lg:mx-auto lg:mx-10 w-[95%] ">
+                    <div className="dark:text-dark-text ">
                         <div>
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="font-bold text-xl">Friend Requets</h2>
@@ -60,14 +61,19 @@ const Friend = ({userid , FriendQuery})=>{
                                 </span>
                             </div>
 
-                            <ul className=" flex items-center gap-2">
-
-                                {users.length != 0 ? 
-                                    
-                                    users.filter((user , index )=> index === users.findIndex((t)=>t.userid == user.userid) ).map((user , index)=>(
-                                        <Card user={user} key={index} sender={userid}/> 
-                                    )) : "pas d'utilisateur"
+                            <ul className=" flex items-center  flex-wrap gap-2 w-full">
+                                
+                                { 
+                                    loader ? 
+                                        <HashLoader color="#1876f2" />
+                                    : 
+                                    users.length != 0 ? 
+                                        users.filter((user , index )=> index === users.findIndex((t)=>t.userid == user.userid) ).map((user , index)=>(
+                                            <Card user={user} key={index} sender={userid}/> 
+                                        )) 
+                                    : "Pas d'utilisateur"
                                 }
+                                
 
 
 
@@ -89,11 +95,15 @@ const Friend = ({userid , FriendQuery})=>{
 
                             <ul className=" flex items-center gap-2">
 
-                                {friendSender.length != 0 ? 
-                                    
-                                    friendSender.filter((user , index )=> index === friendSender.findIndex((t)=>t.userid == user.userid) ).map((user , index)=>(
-                                        <Card user={user} key={index} sender={userid}/> 
-                                    )) : "Aucune invation"
+                                {
+                                    loader ?
+                                        <HashLoader color="#1876f2" />
+                                    :                                     
+                                        friendSender.length != 0 ? 
+                                            
+                                            friendSender.filter((user , index )=> index === friendSender.findIndex((t)=>t.userid == user.userid) ).map((user , index)=>(
+                                                <Card user={user} key={index} sender={userid}/> 
+                                            )) : "Aucune invation"
                                 }
 
                             </ul>

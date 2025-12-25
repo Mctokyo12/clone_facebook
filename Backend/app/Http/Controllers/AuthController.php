@@ -20,7 +20,7 @@ class AuthController extends Controller
         $validator =  Validator::make($request->all() ,
             [
                 'firstname' => ['required', 'string' ,'min:4'],
-                'lastname' => ['required', 'string','min:4'],
+                'lastname' => ['required', 'string','min:2'],
                 'gender' => ['required' , 'string'],
                 'email' => ['required', 'string' , 'email' , 'unique:users'],
                 'password' => ['required', 'string',  'min:6']
@@ -32,7 +32,7 @@ class AuthController extends Controller
          
 
         if($validator->fails()){
-           return response()->json($validator->errors());
+           return response()->json($validator->errors()  , 400);
         }
 
         $userid = AuthController::UserId();
@@ -59,7 +59,7 @@ class AuthController extends Controller
 
     public function UserId(){
       $id="";
-      $nombre = rand(1,16);
+      $nombre = rand(6,16);
       for ($i=0; $i < $nombre; $i++) {
         $id.= rand(0,10);
       }
@@ -86,10 +86,10 @@ class AuthController extends Controller
                 'status' => 'succes',
                 'data' => $user,
                 'token' => $tokens
-            ]);
+            ],200);
 
         }else{
-           return response()->json(['errors'=>"mauvais identifiant"]);
+           return response()->json(['errors'=>"mauvais identifiant"] , 400);
         }
     }
 

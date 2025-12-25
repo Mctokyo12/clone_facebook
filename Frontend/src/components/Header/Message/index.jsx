@@ -5,7 +5,7 @@ import MessageItem from "./MessageItem"
 
 const Message = ()=>{
     return(
-        <div className="gap-2 scrollbar-none px-4 py-4  w-[95%] md:w-[28rem]  h-[87%]  fixed top-32 right-4 sm:top-16   rounded-lg overflow-y-auto dark:bg-dark-third dark:text-dark-text bg-light-primary shadow-box">
+        <div className="gap-2 scrollbar-none px-4 py-4  w-[95%] md:w-[28rem]  h-[87%]  fixed top-32 right-4 sm:top-16   rounded-lg overflow-y-auto dark:bg-dark-second dark:text-dark-text bg-light-primary shadow-box">
            <div className="flex flex-col gap-4  w-full">
 
                 <div className="flex items-center justify-between">

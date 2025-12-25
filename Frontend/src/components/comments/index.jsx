@@ -1,13 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import AddComment from "./AddComment";
 import GetComment from "./Comment"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Post from "../Posts";
+import Error from "../Errors";
+import PropTypes from "prop-types";
 
 
 const Comment = ({currentPost , Posts ,showComment , setShowComment})=>{
 
     const dispatch = useDispatch();
+    const [error , setError] = useState("")
     const user = useSelector((state) => state.userReducer);
     const estObject = (variable) => variable !== null && typeof variable == "object"
     let post = {}
@@ -15,10 +18,18 @@ const Comment = ({currentPost , Posts ,showComment , setShowComment})=>{
     if(Array.isArray(Posts)){
         post = Posts.find(post=> post.postid == currentPost)
     } 
+    
+
+
+    if (error !=="") {
+        setTimeout(() => {
+            setError("");
+        }, 500000);
+    }
   
 
     return (
-        <div id="commentaire" className={`fixed overflow-y-auto z-20 top-0  ${showComment ? "opacity-100 visible" :"opacity-0 invisible"}  transition-all left-0 w-full h-full dark:bg-dark-main/85 bg-white/85 dark:text-dark-text text-gray-500`}>
+        <div id="commentaire" className={`fixed overflow-y-auto  z-30 top-0  ${showComment ? "opacity-100 visible" :"opacity-0 invisible"}  transition-all left-0 w-full h-full dark:bg-dark-main/85 bg-white/85 dark:text-dark-text text-gray-500`}>
 
             <div className="max-h-[75%] h-3/4 w-full sm:w-[85%] lg:w-[70%] xl:w-1/2 dark:bg-dark-second bg-white  absolute left-1/2  top-[20%]  -translate-x-1/2 -translate-y-[20%]">
                 <div className="flex items-center justify-center py-6  border-b-2 dark:border-dark-text border-gray-300  relative w-full">
@@ -29,7 +40,7 @@ const Comment = ({currentPost , Posts ,showComment , setShowComment})=>{
                 </div>
 
 
-                <div className="bg-white w-full h-4/5 overflow-y-scroll dark:bg-dark-second shadow dark:text-dark-text font-medium  py-4  rounded-xl">
+                <div className="bg-white w-full h-4/5 scrollbar overflow-y-scroll dark:bg-dark-second shadow dark:text-dark-text font-medium  py-4  rounded-xl">
                     {estObject(post) ?  <div><Post post={post} user={user} /></div> : <div></div>}    
                     {/* <!-- comment --> */}
                         <div className="px-4 mt-4">
@@ -37,9 +48,12 @@ const Comment = ({currentPost , Posts ,showComment , setShowComment})=>{
                             <div>
                                 {estObject(post) && 
                                    Array.isArray(post.comments) &&
-                                    post.comments.map((comment , index)=>(
-                                        <GetComment comment={comment} key={index}/>
-                                    )) 
+                                    post.comments.length > 0 ? 
+                                        post.comments.map((comment , index)=>(
+                                            <GetComment comment={comment} key={index} setError={setError}/>
+                                        )) 
+                                    : 
+                                        <div className="w-full text-xl text-center"> Pas de Commentaire pour ce Post</div>
                                     
                                 }
 
@@ -50,13 +64,30 @@ const Comment = ({currentPost , Posts ,showComment , setShowComment})=>{
                 </div>
 
                 {/* <!---post comment--> */}
-                    <AddComment postid={currentPost} user={user}/>
+                    <AddComment postid={currentPost}  user={user} setError={setError}/>
                 {/* <!---end post comment--> */}
 
             </div>
 
+            {error && <Error error={error} setError={setError}/>}
+
         </div>
     )
 }  
+
+Comment.propTypes = {
+    currentPost : PropTypes.string.isRequired, 
+    Posts: PropTypes.object,
+    showComment: PropTypes.func, 
+    setShowComment:PropTypes.func,
+ 
+}
+
+Comment.defaultProps = {
+  currentPost : "", 
+  Posts: {},
+  showComment: false, 
+  setShowComment: ()=>false,
+}
 
 export default Comment;

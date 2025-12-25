@@ -6,7 +6,7 @@ import * as yup from "yup"
 import axios from 'axios';
 import{ DotLoader } from 'react-spinners';
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
-import { useNavigate} from 'react-router';
+import { Link, useNavigate} from 'react-router';
 
 
 
@@ -46,11 +46,15 @@ const LoginForm = () => {
                 password: password
             });
 
-            const {errors} = await response.data;
-            const {data , token}  = response.data;
-            data['token'] = token
+            
+            const {data}  = response.data;
+            
             localStorage.setItem("user" , JSON.stringify(data));
-            seterror(errors);
+            localStorage.setItem("token" , `${response.data.token}`);
+
+            console.log(response);
+            
+            
             setloading(false);
             if(!error){
                 naviagte("/");
@@ -58,18 +62,23 @@ const LoginForm = () => {
             }
            
         } catch (error) {
+            const {errors} = error.response.data;
+            seterror(errors);
             setloading(false);
             console.log(error);
             
         }
     }
 
+ 
+    
+
     return (
         <>
 
             <div className=" text-gray-500 dark:text-dark-text py-6   shadow-lg w-[26rem] rounded-lg bg-white dark:bg-dark-second text-center">
         
-                <h4 className="text-center text-xl font-normal pb-4 text-black">Se connecte a Facebook</h4>
+                <h4 className="text-center text-xl font-normal pb-4 text-black dark:text-white">Se connecte a Facebook</h4>
                 <form action="" method="post" className="flex flex-col  px-4 py-2" onSubmit={handleSubmit(onSubmit)}>
 
                     <LoginInput type={"text"} placeholder={"Votre Adress mail"} name={"email"} error={errors.email} register={register}/> 
@@ -100,8 +109,8 @@ const LoginForm = () => {
                     <span>ou</span>
                     <span className="w-1/2 h-[1px] bg-gray-300 dark:bg-dark-third "></span>
                 </div>
-
-                <a href="signup.php"><button  className="border-transparent cursor-pointer mt-1 text-white  bg-green-600  text-lg font-semibold rounded-lg  w-9/12 px-3 py-2.5">Create Account</button></a>
+            
+                <Link to={"/register"} ><button  className="border-transparent cursor-pointer mt-1 text-white  bg-green-600  text-lg font-semibold rounded-lg  w-9/12 px-3 py-2.5">Create Account</button></Link>
             </div>
         </>
     );

@@ -7,19 +7,19 @@ const DateOfBirthSelect = ({bday , bmonth , byear , months , years , days ,dater
             <span className="text-sm text-start mb-2">Date de naissance</span>
             <div className="flex items-center gap-2 justify-between w-full">
 
-                <select name="bday"  value={bday} onChange={handleRegisterChange}   className="border border-gray-300  placeholder:text-lg  dark:border-dark-second bg-transparent rounded-md px-2 w-full  outline-none focus:border-blue-500 py-2">
+                <select name="bday"  value={bday} onChange={handleRegisterChange}   className="border border-gray-300  placeholder:text-lg  dark:border-dark-text bg-transparent rounded-md px-2 w-full  outline-none focus:border-blue-500 py-2">
                     {days.map((day ,index)=>(
                         <option value={day} key={index}>{day}</option>
                     ))}
                 </select>
 
-                <select name="bmonth"  value={bmonth}  onChange={handleRegisterChange}   className="border border-gray-300  placeholder:text-lg  dark:border-dark-second bg-transparent rounded-md px-2 w-full  outline-none focus:border-blue-500 py-2">
+                <select name="bmonth"  value={bmonth}  onChange={handleRegisterChange}   className="border border-gray-300  placeholder:text-lg  dark:border-dark-text bg-transparent rounded-md px-2 w-full  outline-none focus:border-blue-500 py-2">
                     {months.map((month,index)=>(
                         <option value={month} key={index} >{month}</option>
                     ))}
                 </select>
 
-                <select name="byear"  value={byear}  onChange={handleRegisterChange}  className="border border-gray-300  placeholder:text-lg  dark:border-dark-second bg-transparent rounded-md px-2 w-full  outline-none focus:border-blue-500 py-2">
+                <select name="byear"  value={byear}  onChange={handleRegisterChange}  className="border border-gray-300  placeholder:text-lg  dark:border-dark-text bg-transparent rounded-md px-2 w-full  outline-none focus:border-blue-500 py-2">
                     {years.map((year ,index)=>(
                         <option value={year} key={index}>{year}</option>
                     ))}

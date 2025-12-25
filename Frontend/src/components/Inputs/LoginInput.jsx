@@ -20,7 +20,7 @@ const LoginInput = ({type , placeholder , name , error , register }) => {
                 ></span> 
             </div>
 
-            <input type={type} placeholder={placeholder}  name={name} className={`placeholder:text-lg border  ${error ? "border-[#b94a48] " : "focus:border-blue-500"} outline-none  dark:border-dark-second bg-transparent rounded-md px-2  w-full py-2`} {...register(name)}/>
+            <input type={type} placeholder={placeholder}  name={name} className={`placeholder:text-lg border  ${error ? "border-[#b94a48] " : "focus:border-blue-500"} outline-none  dark:border-dark-text/85 bg-transparent rounded-md px-2  w-full py-2`} {...register(name)}/>
 
 
             <ExclamationCircleIcon className={`size-6 ${error ? "" : "hidden"} text-[#b94a48] mr-1 absolute right-0 md:top-2 ${name=="email" ? " top-22.5":"top-2" }`}/>

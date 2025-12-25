@@ -65,6 +65,7 @@ const CreatePostPopup = ({showPostPopup , setshowPostPopup , user}) => {
     
         } catch (error) {
             console.log(error)
+            setError("une erreur c'est produit. veuillez ressayer ")
             setLoading(false)
         }
         
@@ -72,7 +73,7 @@ const CreatePostPopup = ({showPostPopup , setshowPostPopup , user}) => {
 
     return (
         <div>
-            <div id="Publication" class={`fixed overflow-y-auto z-20 top-0   ${showPostPopup ? "":"invisible opacity-0"}   transition-all left-0 w-full h-full dark:bg-dark-main/70   bg-white/70   dark:text-dark-text text-gray-500`}>
+            <div id="Publication" class={`fixed overflow-y-auto z-30 top-0   ${showPostPopup ? "":"invisible opacity-0"}   transition-all left-0 w-full h-full dark:bg-dark-main/70   bg-white/70   dark:text-dark-text text-gray-500`}>
                 <div class="w-[35rem] absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2  py-4 dark:bg-dark-second   bg-white shadow rounded-lg overflow-x-hidden">
                 
                     {/* <!-- ENTETE--> */}
@@ -103,7 +104,7 @@ const CreatePostPopup = ({showPostPopup , setshowPostPopup , user}) => {
                             <form id="PostForm" class="flex flex-col gap-2" onSubmit={(e)=>handleSubmit(e)} >
                                 
                                 <div className={`relative  ${currentBackground ? 'h-[340px] bg-cover flex items-center justify-center ': showImagePreview  ?  ' h-20' : ''}    `}  style={{backgroundImage: `url(${currentBackground})`}}>
-                                    <textarea name="post" id="Post" value={textInput}  cols="10" rows="4"  onChange={(e)=>{setTextInput(e.target.value); setMarginTop(marginTop - 0.1) }} class={`border-none  px-4  w-full bg-transparent overflow-hidden  resize-none  ${currentBackground ? 'h-[340px] text-center absolute': showImagePreview ?  "h-20" : ''}   outline-none placeholder:text-black text-black text-2xl placeholder:text-2xl transition-all`} placeholder="Quoi de neuf ,  tokyo ?"  style={{paddingTop: `${marginTop <= 7 ? 7 : marginTop }%`}} ></textarea>
+                                    <textarea name="post" id="Post" value={textInput}  cols="10" rows="4"  onChange={(e)=>{setTextInput(e.target.value); setMarginTop(marginTop - 0.1) }} class={`border-none  px-4  w-full bg-transparent overflow-hidden  resize-none  ${currentBackground ? 'h-[340px] text-center absolute': showImagePreview ?  "h-20" : ''}   outline-none placeholder:text-black dark:placeholder:text-white text-black dark:text-white text-2xl placeholder:text-2xl transition-all`} placeholder="Quoi de neuf ,  tokyo ?"  style={{paddingTop: `${marginTop <= 7 ? 7 : marginTop }%`}} ></textarea>
                                 </div>
                                 {!showImagePreview && 
                                     <div className='flex items-center  justify-between '>
@@ -128,7 +129,7 @@ const CreatePostPopup = ({showPostPopup , setshowPostPopup , user}) => {
                                         <span className="font-bold">Publication</span>
                                     </div>
                                     : 
-                                    <input type='submit' class={`border-transparent  flex garp-2 items-center ${textInput ? ' bg-blue':'bg-gray-400'}  text-white    w-full  text-xl font-semibold rounded-lg px-2 py-2 `}/>
+                                    <input type='submit' class={`border-transparent  flex garp-2 items-center ${textInput || images.length>0 ? ' bg-blue cursor-pointer':'bg-gray-400'}  text-white    w-full  text-xl font-semibold rounded-lg px-2 py-2 `}/>
                                 }
 
                             </form>

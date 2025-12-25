@@ -49,16 +49,18 @@ const Likes = ({like_post,  userLike , visibleReacts , setVisibleReacts })=>{
                 }}
                 className="like flex relative cursor-pointer text-center items-center  justify-center px-2 py-2 rounded-lg  hover:bg-gray-100 dark:hover:bg-dark-third text-gray-500 dark:text-dark-text gap-2 w-1/3">
                 {
-                    userLike.map((like , index)=>(
+                    userLike.length > 0 ?
+                        userLike.map((like , index)=>(
 
-                        like.type == 'angry' ? <img src="/reacts/angry.svg" alt="" srcset="" className=" size-6" key={index} /> :
-                        like.type == "love" ?  <img src="/reacts/love.svg" alt="" srcset=""  className=" size-6" key={index}/> :
-                        like.type == "haha" ?  <img src="/reacts/haha.svg" alt="" srcset=""  className=" size-6" key={index}/> :
-                        like.type == "sad"  ?  <img src="/reacts/sad.svg" alt="" srcset=""  className=" size-6" key={index}/> :
-                        like.type == "like" ?  <img src="/reacts/like.svg" alt="" srcset=""  className=" size-6" key={index}/>:
-                        like.type == "wow"  ?  <img src="/reacts/wow.svg" alt="" srcset=""  className=" size-6" key={index}/> : 
-                        <i className="bx bx-like text-2xl"></i>
-                   ))
+                            like.type == 'angry' ? <img src="/reacts/angry.svg" alt="" srcset="" className=" size-6" key={index} /> :
+                            like.type == "love" ?  <img src="/reacts/love.svg" alt="" srcset=""  className=" size-6" key={index}/> :
+                            like.type == "haha" ?  <img src="/reacts/haha.svg" alt="" srcset=""  className=" size-6" key={index}/> :
+                            like.type == "sad"  ?  <img src="/reacts/sad.svg" alt="" srcset=""  className=" size-6" key={index}/> :
+                            like.type == "like" ?  <img src="/reacts/like.svg" alt="" srcset=""  className=" size-6" key={index}/>:
+                            like.type == "wow"  ?  <img src="/reacts/wow.svg" alt="" srcset=""  className=" size-6" key={index}/> : ""
+                        ))
+                    :
+                    <i className="bx bx-like text-2xl"></i>
                 }
                     
                 <span className="dark:text-dark-text" >Like</span>

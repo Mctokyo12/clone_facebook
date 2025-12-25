@@ -20,7 +20,11 @@ class Post extends Model
         'post',
         'files',
         'type',
+        'is_shared',
         'is_profile_picture',
         'is_cover_picture',
+        'post_share_id'
     ];
+
+    
 }

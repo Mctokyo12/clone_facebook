@@ -6,7 +6,7 @@ import MenuItem from './MenuItem';
 
 const AllMenu = () => {
     return (
-        <div id="menu" className="gap-2 scrollbar-none   px-4 py-4 w-[95%] sm:w-9/12 lg:w-[50%] xl:w-[46%] h-[87%]  fixed top-32 right-4 sm:top-16   rounded-lg overflow-y-auto dark:bg-dark-third dark:text-dark-text  bg-light-secondary shadow">
+        <div id="menu" className="gap-2 scrollbar-none  scrollbar px-4 py-4 w-[95%] sm:w-9/12 lg:w-[50%] xl:w-[46%] h-[87%]  fixed top-32 right-4 sm:top-16   rounded-lg overflow-y-auto dark:bg-dark-third dark:text-dark-text  bg-light-secondary shadow">
 
             <h1 className="font-semibold pb-2 text-2xl">Menu</h1>
             <div className="flex flex-col w-full gap-2 lg:flex-row items-center relative">
@@ -96,7 +96,7 @@ const AllMenu = () => {
                         {create.map(({name , icon} , index)=>(
                                 <li key={index} class="flex gap-3 items-center px-2 py-2 dark:hover:bg-dark-third dark:hover:bg-opacity-50 rounded-lg hover:bg-gray-200 cursor-pointer">
                                     <span className="rounded-full text-xl relative text-center grid place-items-center py-2 px-2   shadow  dark:bg-dark-third dark:text-dark-text  bg-gray-200 cursor-pointer">
-                                        <i className={icon}></i>
+                                        <i className={`${icon} dark:invert-100`}></i>
                                     </span>
                                     <h4 className="font-semibold">{name}</h4>
                                 </li>

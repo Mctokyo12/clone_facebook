@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\User;
+use App\Notifications\SocialNotification;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Ramsey\Uuid\Uuid;
@@ -33,7 +35,8 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all() , ['comment' => 'required']);
-
+        $user = PostController::getUserByPost($request->input("postid"));
+        
         if($validator->fails()){
             return response()->json($validator->errors());
         }
@@ -46,17 +49,31 @@ class CommentController extends Controller
         ]);
 
         $comment = new stdClass();
+
+       
+
+        $actor_name = UserController::getOneUser($request->input('userid'));
+        $comment_notification = [
+            "postid"=>$request->input("postid"),
+            "actor_id"=> $request->input('userid'),
+            'actor_name' => $actor_name->lastname ." ". $actor_name->firstname,
+            'comment_id'=> $new->commentid,
+            'message' => " a commente votre publication"
+        ];
         
         if($new){
             $comment->commentid = $new->commentid;
             $comment->postid = $new->postid;
             $comment->userid = $new->userid;
             $comment->comment = $new->comment;
-            $user = User::select("lastname" , "firstname" , "gender" , "profile_picture")->where("userid" , $new->userid)->get();
-            $comment->firstname = $user[0]->firstname;
-            $comment->lastname = $user[0]->lastname;
-            $comment->gender = $user[0]->gender;
-            $comment->profile_picture = $user[0]->profile_picture;
+            $user_comment = User::select("lastname" , "firstname" , "gender" , "profile_picture")->where("userid" , $new->userid)->get();
+            $comment->firstname = $user_comment[0]->firstname;
+            $comment->lastname = $user_comment[0]->lastname;
+            $comment->gender = $user_comment[0]->gender;
+            $comment->profile_picture = $user_comment[0]->profile_picture;
+            if($user->userid !== $request->input('userid')){
+                $user->notify(new SocialNotification('comment' , $comment_notification));
+            }
         }
 
         return response()->json($comment);

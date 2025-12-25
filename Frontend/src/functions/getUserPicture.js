@@ -19,7 +19,7 @@ export const getUserPicture = async (id , isPhotos) => {
 
       
     } catch (error) {
-        return error;
+        return false;
     }
 
 }

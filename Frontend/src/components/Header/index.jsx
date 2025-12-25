@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AllMenu from './AllMenu';
 import UserMenu from './OthersMenu';
 import Notification from './Notification';
@@ -6,46 +6,154 @@ import Message from './Message';
 import { useSelector } from 'react-redux';
 import { ProfilePicture } from '../../functions/ProfilePicture';
 import { Link } from 'react-router';
+import Search from './Search';
+import { Theme } from '../../functions/Theme';
+import axios from 'axios';
+import { FillArray, RemoveDouble } from '../../functions/Fetch';
+import { useEchoModel, useEchoNotification } from '@laravel/echo-react';
+
 
 
 const Header = () => {
-   const [allMenu , setallMenu] = useState(false)
+
    const [userMenu , setuserMenu] = useState(false)
-   const [messageMenu , setMessageMenu] = useState(false)
-   const [notificationMenu , setNotificationMenu] = useState(false)
+   const [searchVisible , setSearchVisible] = useState(false)
    const user = useSelector((state) => state.userReducer);
    const profile = ProfilePicture(user);
-//    const [visible , setVisible] = useState(0)
+   const [activeMenu , setActiveMenu] = useState(0)
+   const [activeClass , setActiveClass] = useState("")
+   const [visibleMenu ,setVisibleMenu] = useState(false);
+   const [visibleMessage ,setVisibleMessage] = useState(false);
+   const [theme , setTheme] = useState(localStorage.theme)
+   const [notifications , setNotifications] = useState([]);
+   const [unreadNotification , setUnreadNotification] = useState([]);
+   const [error , setError] = useState("");
+   const {channel} = useEchoModel("App.Models.User",user.id);
+    const getNotification  = async ()=>{
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/notification/${user.userid}`);
+            const {data} = response;
+            FillArray(data ,setNotifications)
+            
+        } catch (error) {
+            
+            setError("une Erreur est survenue sur le serveur ....")
+        }
+    }
+
+    const getUnreadNotification = async ()=>{
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/unread-notification/${user.userid}`);
+            const {data} = response;
+            
+            
+            FillArray(data,setUnreadNotification);
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }  
+
+    
+
+
+    // setTimeout(() => {
+
+    // }, 1000);
+
+
+    // window.Echo.private("App.Models.User." + user.id)
+    //     .notification((notification)=>{
+    //         console.log(notification);
+    //         setUnreadNotification(previewState=>[...previewState , notification])
+    //     })
+
+    useEffect(()=>{
+        getNotification();
+        getUnreadNotification();
+        channel().notification((notification)=>{
+            
+            setNotifications(previewState=>[notification , ...previewState])
+            setUnreadNotification(previewState=>[notification , ...previewState ])
+            
+        
+        });
+        
+       
+
+        return ()=>{
+            console.log("Nettoyage de l'ecouteur ");
+        }
+    },[user.id]);
+    
+    
+    
+   let count = 0
+
+   const RightNav = [
+        {
+            icon:"bxs-grid",
+            isvisible:"menu"
+        },
+        {
+            icon:"bxl-messenger",
+            isvisible:"message"
+        },
+        {
+            icon:"bxs-bell",
+            isvisible:"notification"
+
+        }
+   ]
 
 
     return (
-        <nav className=" bg-white z-20 dark:bg-dark-second dark:border-b-2 pt-3 pb-0 md:py-3 dark:border-dark-third px-3 h-16 flex flex-col items-center justify-center shadow fixed top-0 w-full max-md:h-32 md:flex-row  md:justify-between">
+        <nav className=" bg-white z-30 dark:bg-dark-second dark:border-b-2 pt-3 pb-0 md:py-3 dark:border-dark-third px-3 h-16 flex flex-col items-center justify-center shadow fixed top-0 w-full max-md:h-32 md:flex-row  md:justify-between">
             {/* <!-- LEFT NAV --> */}
                 <div className=" flex items-center gap-3 justify-between w-full md:w-max ">
                     <a href="#" className="inline-block md:hidden">
                         <img src="/images/fb-logo-mb.png" alt="" className="w-36" />
                     </a>
-                    <a id="fb-logo" href="#"  className="hidden md:inline-block">
-                        <img src="/images/fb-logo.png" alt="" className="object-cover aspect-square w-12"/>
-                    </a>
-
-                    <span id="search-back" className="rounded-full hidden text-xl relative text-center grid place-items-center py-2 px-2   shadow  dark:hover:bg-dark-third dark:bg-transparent dark:text-dark-text  bg-gray-200 cursor-pointer">
-                        <i className="bx bx-arrow-back text-xl"></i>
-                    </span>
+                    {!searchVisible &&
+                        <a id="fb-logo" href="#"  className="hidden md:inline-block">
+                            <img src="/images/fb-logo.png" alt="" className="object-cover aspect-square w-12"/>
+                        </a>
+                    }
+                    {
+                        searchVisible && 
+                        <span id="search-back" onClick={()=>setSearchVisible(false)}  className="rounded-full  text-xl relative text-center grid place-items-center py-2 px-2   shadow  dark:hover:bg-dark-third dark:bg-transparent dark:text-dark-text  bg-gray-200 cursor-pointer">
+                            <i className="bx bx-arrow-back text-xl"></i>
+                        </span>
+                    }
 
                     <div className="flex items-center gap-1">
 
-                        <div id="search-input" className="flex items-center cursor-pointer justify-center gap-4 bg-gray-100  dark:bg-dark-third rounded-full px-3 py-2">
+                        <div id="search-input" onClick={()=>setSearchVisible(!searchVisible)} className="flex items-center cursor-pointer justify-center gap-4 bg-gray-100  dark:bg-dark-third rounded-full px-3 py-2">
                             <i className="bx bx-search text-2xl dark:text-dark-text"></i>
-                            <input className="bg-transparent cursor-pointer  outline-none md:hidden hidden xl:inline-block" type="text" name="" id="" placeholder="Search facebook" />
+                            <input className="bg-transparent cursor-pointer  outline-none md:hidden  dark:placeholder:text-dark-text hidden xl:inline-block" type="text" name="" id="" placeholder="Search facebook" />
                         </div>
 
-                        <div className="rounded-full text-xl md:hidden grid place-items-center py-3 px-3 hover:bg-gray-300  dark:bg-dark-third dark:text-dark-text bg-gray-200 cursor-pointer  ">
+                        <div onClick={()=>setVisibleMessage(!visibleMessage)} className="rounded-full text-xl md:hidden grid place-items-center py-3 px-3 hover:bg-gray-300  dark:hover:bg-dark-text/50 dark:bg-dark-third dark:text-dark-text bg-gray-200 cursor-pointer  ">
                             <i className="bx bxl-messenger "></i>
                         </div>
 
-                        <div className="rounded-full  text-xl md:hidden grid place-items-center py-3 px-3 hover:bg-gray-300   dark:bg-dark-third dark:text-dark-text bg-gray-200 cursor-pointer">
-                            <i className="bx bxs-moon  "></i>
+                        <div onClick={()=>{
+
+                            if(localStorage.theme == "light"){
+                                localStorage.theme = "dark"
+                                setTheme(localStorage.theme)
+                            }else{
+                                localStorage.theme = "light"
+                                setTheme(localStorage.theme)
+                            }  
+                            
+                            Theme()
+                        }} className="rounded-full  text-xl md:hidden grid place-items-center py-3 px-3 hover:bg-gray-300   dark:bg-dark-third dark:hover:bg-dark-text/50 dark:text-dark-text bg-gray-200 cursor-pointer">
+                            {
+                                theme === "light" ? <i className={`bx bxs-moon`}></i> : <i className={`bx bxs-sun`}></i>
+                            }
+                            
                         </div>
 
                     </div>
@@ -89,7 +197,7 @@ const Header = () => {
                         </a>
                     </li>
 
-                    <li className="w-1/5 inline-block md:hidden ">
+                    <li className="w-1/5 inline-block md:hidden " onClick={()=>setVisibleMenu(!visibleMenu)}>
                         <a href="#" className="px-2 py-3 inline-block w-full hover:bg-slate-100  dark:hover:bg-dark-third dark:text-dark-text hover:text-gray-500 transition-all  text-center cursor-pointer text-gray-500 rounded-md ">
                             <i className="bx bx-menu text-4xl"></i>
                         </a>
@@ -100,18 +208,41 @@ const Header = () => {
             {/* <!-- RIGHT NAV --> */}
                 <div className="hidden items-center md:flex justify-center gap-4 mx-4 ">
 
-                    <div id="grid"  onClick={()=>{setallMenu(!allMenu)}} className={`  ${allMenu && "text-blue-500"}  rounded-full text-xl text-center xl:grid hidden  place-content-center h-12 w-12 hover:bg-gray-300 dark:bg-dark-third dark:text-dark-text bg-gray-200 cursor-pointer`}>
-                        <i className='bx bxs-grid text-3xl'></i> 
-                    </div>
-                
-                    <div onClick={()=>{ setMessageMenu(!messageMenu)}} className={` ${messageMenu && "text-blue-500"} rounded-full text-xl xl:grid hidden place-items-center h-12 w-12 hover:bg-gray-300  dark:bg-dark-third dark:text-dark-text bg-gray-200 cursor-pointer `}>
-                        <i className="bx bxl-messenger text-3xl"></i>
-                    </div>
+                    
+                    {RightNav.map(({icon , isvisible} , index)=>(
+                        <div id="grid"  key={index}  onClick={()=>{
+                            count++
+                            if (isvisible == "menu") {
+                                setActiveMenu(1)
+                                setActiveClass("menu")
+                            }else if (isvisible == "message"){
+                                setActiveMenu(2)
+                                setActiveClass("message")
+                            }else if(isvisible == "notification"){
+                                setActiveMenu(3)
+                                setActiveClass("notification")
+                            }
 
-                    <div onClick={()=>{setNotificationMenu(!notificationMenu)}} className={`${notificationMenu && "text-blue"} rounded-full text-xl relative text-center grid place-items-center h-12 w-12 hover:bg-gray-300   dark:bg-dark-third dark:text-dark-text  bg-gray-200 cursor-pointer`}>
-                        <i className="bx bxs-bell text-3xl"></i>
-                        <span className="absolute bg-red-500 text-white rounded-full p-2 top-0 right-0 text-xs h-5 w-5  flex justify-center items-center">9</span>
-                    </div>
+                            if (count === 2) {    
+                                setActiveMenu(0)
+                                setActiveClass("")
+                            }
+                            
+
+                        }} className={`  ${activeClass == isvisible ? "text-blue-500" : "dark:text-dark-text"}  rounded-full text-xl text-center xl:grid hidden  relative place-content-center h-12 w-12 hover:bg-gray-300 dark:hover:bg-dark-text/50 dark:bg-dark-third  bg-gray-200 cursor-pointer`}>
+                            <i className={`bx ${icon} text-3xl`}></i> 
+                            {isvisible == "notification" ?
+                                RemoveDouble(unreadNotification).length < 15 && RemoveDouble(unreadNotification).length > 0  ?
+                                    <span className="absolute bg-red-500 text-white rounded-full p-2 top-0 right-0 text-xs h-5 w-5  flex justify-center items-center">{RemoveDouble(unreadNotification).length}</span> :
+                                RemoveDouble(unreadNotification).length > 15 ?
+                                    <span className="absolute bg-red-500 text-white rounded-full p-2 top-0 right-0 text-xs h-5 w-6  flex justify-center items-center">15+</span> :
+                                "" : ""
+                                    
+                            }
+                        </div>
+                        
+                    ))}
+                
 
                     <div id="user-profile" className="xl:flex  hidden items-center justify-center  relative  rounded-xl  h-12    cursor-pointer">
                         <img src={profile} alt="" className="w-12 h-12 object-cover z-10 rounded-full"/>
@@ -122,11 +253,27 @@ const Header = () => {
 
                 </div>
             {/* <!-- RIGHT NAV --> */}
-
-            {allMenu &&  <AllMenu/>}
+            {/* pour l'ordinateur */}
             {userMenu && <UserMenu user={user}/>}
-            {notificationMenu && <Notification/>}
-            {messageMenu && <Message/>}
+            {searchVisible && <Search/>}
+            {activeMenu == 1 &&  <AllMenu/>}
+            {activeMenu == 2  && <Message/>}
+            {activeMenu == 3 && 
+                <Notification 
+                    user={user}
+                    notifications={notifications} 
+                    error={error} 
+                    setError={setError} 
+                    unreadNotification={unreadNotification}
+                />
+            }
+
+            {/* pour le mobile */}
+            {visibleMenu && <AllMenu/> }
+            {visibleMessage && <Message/> }
+
+
+           
             
 
         </nav>

@@ -1,8 +1,10 @@
+import { CheckUrl } from "./Fetch";
+
 
 export const ProfilePicture = (data)=>{
     let profile = "/images/profile.png";
     if(data.profile_picture){
-        profile = `${import.meta.env.VITE_URL_BACKEND}/storage/${data.profile_picture}`
+        profile = CheckUrl(data.profile_picture)
     }else{
         if (data.gender == "female") {
             profile = "/images/user_female.jpg"
@@ -14,7 +16,7 @@ export const ProfilePicture = (data)=>{
 export const CoverPiture = (data)=>{
     let profile = ""
     if(data.cover_picture){
-        profile = `${import.meta.env.VITE_URL_BACKEND}/storage/${data.cover_picture}`
+        profile = CheckUrl(data.cover_picture)
     }
 
     return profile;

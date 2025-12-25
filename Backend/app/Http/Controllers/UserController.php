@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Friend;
 use App\Models\Post;
 use App\Models\User;
+use App\Notifications\SocialNotification;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,6 +23,11 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    public static function getOneUser($id){
+        $user = User::where("userid",$id)->first();
+        return $user;
+    }
+
     public  function getAllUser(int $id) 
     {   
         $friends = Friend::select("*")->get();
@@ -31,7 +37,7 @@ class UserController extends Controller
             $alluser = User::whereNotIn("userid" , function (Builder $query)  {
             $query->select("sender")->from("friends");
             })->whereNotIn("userid" , function (Builder $query)  {
-                $query->select("receIver")->from("friends");
+                $query->select("receiver")->from("friends");
             })->where("userid" , "!=" , $id)->get();
         }
         
@@ -52,7 +58,7 @@ class UserController extends Controller
         return response()->json($FriendSender);
     }
 
-    public   function friends() 
+    public  function friends() //friend function
     {
        $friends = Friend::select("*")->get();
        return response()->json($friends);
@@ -60,18 +66,33 @@ class UserController extends Controller
 
     public  function getFriend(Request $request, int $id) : JsonResponse
     {   
-        $action = $request->input("action");
-   
-        if ($action === "receiver" ) {
-            $friend =  Friend::join("users" , "friends.sender" ,"=" , "users.userid")
-            ->select("users.*")->where("friends.receiver",$id)
-            ->where("status" , 2)->get(); 
-            
-        }else {
-            $friend =  Friend::join("users" , "friends.receiver" ,"=" , "users.userid")
-            ->select("users.*")->where("friends.sender",$id)
-            ->where("status" , 2)->get();
+        $AllFriends = Friend::select("*")->get();
+        $friend = null;
+        foreach ($AllFriends as $item) {
+            if ($item->receiver == $id) {
+                $friend =  Friend::join("users" , "friends.sender" ,"=" , "users.userid")
+                ->select("users.*")->where("friends.receiver",$id)
+                ->where("status" , 2)->get(); 
+                break;
+            }else if($item->sender == $id) {
+                $friend =  Friend::join("users" , "friends.receiver" ,"=" , "users.userid")
+                ->select("users.*")->where("friends.sender",$id)
+                ->where("status" , 2)->get();
+                break;
+            }
         }
+        
+        
+        // $action = $request->input("action");
+   
+        // // if ($action === "receiver" ) {
+        //     $friend =  Friend::join("users" , "friends.sender" ,"=" , "users.userid")
+        //     ->select("users.*")->where("friends.receiver",$id)
+        //     ->where("status" , 2)->get(); 
+            
+        // // }else {
+
+        // // }
        
 
        
@@ -139,8 +160,6 @@ class UserController extends Controller
                 $cropImage->save(public_path("storage/".$cropPath));
             }
 
-
-            
             $profileCover  = User::where("userid" , $id)->update([
                 "$profile" => $cropPath
             ]);
@@ -189,6 +208,7 @@ class UserController extends Controller
         
 
     }
+
     public function GetUserPicture(Request $request, int $id){
         
         if (!$request->input("allPhotos")) {
@@ -235,21 +255,34 @@ class UserController extends Controller
     {
         $id = (int) $request->input("sender");
         $receiver = (int) $request->input("receiver"); 
+        $user = User::where('userid',$receiver)->first();
+
         if(Friend::where("sender" , $id)->where("receiver" , $receiver)->exists()){
             Friend::where("sender" , $id)->where("receiver" , $receiver)
             ->update([
                 "status" => 1
             ]);
-
             return response()->json(["status"=>1]);
             exit;
         }
        
+
+        $actor_name = UserController::getOneUser($id);
+        $Friend_notification  = [
+            "actor_id"=> $id,
+            'actor_name' => $actor_name->lastname ." ". $actor_name->firstname,
+            'message' => " vous a envoyer une demande d'ami(e)"
+        ];
+
         $instance = Friend::create([
             "sender"=>$id,
             "receiver"=>$receiver,
             "status"=> 1
         ]);
+
+        if ($instance) {
+            $user->notify(new SocialNotification('send_invitation', $Friend_notification));
+        }
 
         return response()->json($instance);
     }
@@ -259,6 +292,7 @@ class UserController extends Controller
         $status = 2;
         $sender = (int) $request->input("sender");
         $receiver = (int) $request->input("receiver");
+        $user = User::where('userid',$receiver)->first();
 
         $result = Friend::where(["sender" => $sender , "receiver"=> $receiver])
         ->orwhere(["sender" => $receiver , "receiver"=> $sender])
@@ -266,23 +300,42 @@ class UserController extends Controller
             "status" => $status
         ]);
 
-       return response()->json(["status"=>$status] ,200);
+        if ($result) {
+            $actor_name = UserController::getOneUser($sender);
+            $Friend_notification  = [
+                "actor_id"=> $sender,
+                'actor_name' => $actor_name->lastname ." ". $actor_name->firstname,
+                'message' => " a confirme votre  demande d'ami(e)"
+            ];
+            $user->notify(new SocialNotification('confirme_invitation', $Friend_notification));
+
+            return response()->json(["status"=>$status] ,200);
+        }
+        
         
 
     }
-
 
     public function cancel_request(Request $request)
     {
         $status = 0;
         $sender = (int) $request->input("sender");
         $receiver = (int) $request->input("receiver");
+        $user = User::where('userid',$receiver)->first();
+
         $result = Friend::where(["sender" => $sender , "receiver"=> $receiver])
         ->update([
             "status" => $status
         ]);
 
         if ($result) {
+            $actor_name = UserController::getOneUser($sender);
+            $Friend_notification  = [
+                "actor_id"=> $sender,
+                'actor_name' => $actor_name->lastname ." ". $actor_name->firstname,
+                'message' => " a refuser votre  demande d'ami(e)"
+            ];
+            $user->notify(new SocialNotification('cancel_invitation', $Friend_notification));
             return response()->json(["status"=>$status] ,200);
         }
       

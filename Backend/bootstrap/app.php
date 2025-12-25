@@ -11,7 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware) {
+    ->withBroadcasting(
+        __DIR__.'/../routes/channels.php',
+        ['prefix'=>'api','middleware'=>['api','auth:sanctum']]
+    )
+    ->withMiddleware(function (   $middleware) {
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {

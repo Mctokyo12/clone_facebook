@@ -36,7 +36,7 @@ const Stories = () => {
                 ))}
                 
             {/* <!-- END PEOPLE STORY --> */}
-            <div className="  absolute -right-4 top-1/2 -translate-y-1/2 hidden lg:grid rounded-full text-2xl text-center place-content-center py-3 px-3 hover:bg-gray-100  bg-white shadow dark:bg-dark-third  dark:text-dark-text cursor-pointer">
+            <div className="  absolute -right-4 top-1/2 -translate-y-1/2 hidden lg:grid rounded-full text-2xl text-center place-content-center py-3 px-3 hover:bg-gray-100  bg-white shadow dark:bg-dark-second dark:hover:bg-dark-third  dark:text-dark-text cursor-pointer">
                 <i className="bx bx-chevron-right"></i>
             </div>
 

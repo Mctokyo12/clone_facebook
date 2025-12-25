@@ -1,18 +1,21 @@
 import axios from "axios"
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { delete_post } from "../../actions/post.action";
+import Error from "../Errors"
+import { useState } from "react";
 
 
 const Confirmation = ({currentPost , setPostDelete , postDelete})=>{
     const dispatch =  useDispatch()
+    const [error , setError] = useState("")
+    const user = useSelector((state) => state.userReducer);
     const DeletePost =  async ()=>{
-        
         try {
             dispatch(delete_post(currentPost))
             setPostDelete(false)
             
         } catch (error) {
-            console.log(error);
+            setError("Une erreur s'est produit lors de la suppression de ce post .")
             
         }
         
@@ -51,8 +54,9 @@ const Confirmation = ({currentPost , setPostDelete , postDelete})=>{
                     </div>
 
                 </div>
-                
            </div>
+            {error && <Error error={error}/>}
+
         </div>
     )
 }

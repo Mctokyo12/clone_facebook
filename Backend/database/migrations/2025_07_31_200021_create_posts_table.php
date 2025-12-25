@@ -15,11 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('postid')->unique();
             $table->bigInteger('userid');
-            $table->string('post');
-            $table->string('files');
-            $table->string("type");
+            $table->text('post')->nullable();
+            $table->text('files')->nullable();
+            $table->string("type")->nullable();
             $table->integer("is_profile_picture")->default(0);
             $table->integer("is_cover_picture")->default(0);
+            $table->integer("is_shared")->default(0);
+            $table->string("post_share_id")->nullable();
             $table->foreign('userid')->references('userid')->on('users')->onDelete('cascade');
             $table->timestamps();
         });

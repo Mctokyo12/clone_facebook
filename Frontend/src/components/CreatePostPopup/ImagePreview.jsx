@@ -37,11 +37,11 @@ const ImagePreview = ({showImagePreview , setshowImagePreview  , setCurrentBackg
 
 
     return (
-        <div id="Media"  class={`px-2 py-2 border ${showImagePreview ? "" : "hidden"}  rounded-lg dark:border-dark-border mb-4 overflow-y-auto  overflow-x-hidden max-h-[250px]`}>
+        <div id="Media"  class={`px-2 py-2 border ${showImagePreview ? "" : "hidden"}  rounded-lg dark:border-dark-border mb-4 overflow-y-auto scrollbar  overflow-x-hidden max-h-[250px]`}>
                         
             {/* <!-- Pour Envoyer les fichies --> */}
                 <div id="SelectImage" className={`${imagesPreview.length > 0 ?  'hidden' : '' } py-6 flex items-center cursor-pointer  h-52 justify-center w-full  dark:bg-dark-main relative rounded-lg`}>
-                    <div id="closeMedia" onClick={()=>{setshowImagePreview(false)}} className="rounded-full w-8 h-8  justify-self-center  z-20 absolute top-2 right-2  grid place-items-center  hover:bg-gray-300   dark:hover:bg-dark-third dark:bg-dark-third dark:text-dark-text  bg-gray-200 cursor-pointer">
+                    <div id="closeMedia" onClick={()=>{setshowImagePreview(false);}} className="rounded-full w-8 h-8  justify-self-center  z-20 absolute top-2 right-2  grid place-items-center  hover:bg-gray-300   dark:hover:bg-dark-third dark:bg-dark-third dark:text-dark-text  bg-gray-200 cursor-pointer">
                         <i className="bx bx-x text-2xl"></i>
                     </div>
                     <div  className="text-center">
@@ -57,7 +57,7 @@ const ImagePreview = ({showImagePreview , setshowImagePreview  , setCurrentBackg
             {/* <!-- Fin Pour Envoyer les fichies --> */}
 
             {/* <!--  Visualise les fichiers --> */}
-                <div  id="show" className={`${imagesPreview.length > 0 ?  '' : 'hidden'} rounded-lg relative  block:grid place-items-center overflow-y-auto overflow-x-hidden h-full w-full cursor-pointer`}>
+                <div  id="show" className={`${imagesPreview.length > 0 ?  '' : 'hidden'} rounded-lg relative  scrollbar block:grid place-items-center overflow-y-auto overflow-x-hidden h-full w-full cursor-pointer`}>
                     <div id="more" className=" absolute left-4 top-4  flex gap-1">
                         <button className="outline-none flex items-center gap-3 py-2 px-3 border-none  rounded-lg bg-light-secondary border-4 text-light-text dark:bg-dark-second dark:hover:bg-dark-third dark:text-white   text-sm font-semibold cursor-pointer">
                             <span className=" bx bx-edit text-2xl"></span>
@@ -69,7 +69,15 @@ const ImagePreview = ({showImagePreview , setshowImagePreview  , setCurrentBackg
                             Add Photos/Videos
                         </button>
                     </div>
-                    <span id="closePrevieur"  onClick={()=>setImagesPreview([])} className="bx bx-x text-3xl  p-1 absolute  right-2 top-2 rounded-full flex items-center justify-center bg-light-third text-light-text  dark:bg-dark-third dark:text-dark-text"></span>
+                    <span id="closePrevieur" 
+                        onClick={
+                            ()=>{
+                                setImagesPreview([])
+                                setImages([])
+                            }
+                        } 
+                        className="bx bx-x text-3xl  p-1 absolute  right-2 top-2 rounded-full flex items-center justify-center bg-light-third text-light-text  dark:bg-dark-third dark:text-dark-text"
+                    ></span>
                     <div 
                         className={
                             imagesPreview.length == 1 ? 'preview1' :

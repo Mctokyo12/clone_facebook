@@ -1,14 +1,43 @@
-const MessageItem = ()=>{
+import axios from "axios"
+import { ProfilePicture } from "../../../functions/ProfilePicture"
+axios
+const MessageItem = ({item , setIsChat , setCurrentChat , user , setCurrentUser})=>{
+   
+    const getChat = async (id)=>{
+        try {
+
+            // on recuperer les donnees sur le chat 
+            const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/message`,{
+                "sender": user.userid,
+                "receiver":id
+            });
+            
+
+            // on recuperer l'utilisateur avec qui nous allons chate
+            const res = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/user/${id}`);
+            setCurrentUser(res.data);
+            const { data } = response;
+            setCurrentChat([...data]);
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
+   
+    
+    
     return (
-        <li className="notification rounded-lg px-2 py-2  hover:bg-light-secondary relative cursor-pointer dark:bg-dark-third flex items-center gap-4">
-            <div className="w-28 aspect-square flex-1/3 bg-amber-200 overflow-hidden rounded-full">
-                <img src="/images/default_pic.png" alt="" srcset=""  className=" object-cover"/>
+        <li onClick={()=>getChat(item.userid)}  className="notification rounded-lg px-2 py-2  hover:bg-light-secondary relative cursor-pointer dark:hover:bg-dark-third flex items-center gap-4">
+            <div className="w-16 aspect-square  overflow-hidden rounded-full">
+                <img src={ProfilePicture(item)} alt="" srcset=""  className=" object-cover"/>
             </div>
             <div className="flex flex-col">
-                <span className="text-gray-800 dark:text-dark-text text-lg">
-                    Quelqu’un a tenté de se connecter, mais nous l’en avons empêché.
+                <span className="font-semibold dark:text-dark-text text-light-text">{item.lastname} {item.firstname}</span>
+                <span className="text-gray-800 dark:text-dark-text text-sm">
+                    Les messages et les appels sont p..... 5 sem.
                 </span>
-                <span className="font-semibold text-blue-500">1j</span>
+                {/* <span className="font-semibold text-blue-500">1j</span> */}
             </div>
             <div className="w-6 aspect-square rounded-full bg-blue"></div>
 

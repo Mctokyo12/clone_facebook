@@ -1,6 +1,6 @@
-const Knowledge = ()=>{
+const Knowledge = ({visibleHeader})=>{
     return(
-        <div className="mt-2  mx-auto w-[67%] h-[19rem] px-4 py-2  rounded-xl  relative -z-10 border-[3px] border-blue-500 " >
+        <div className={`mt-2 ${visibleHeader ? "lg:w-[100%]":"lg:w-[67%]"}  hidden lg:block mx-auto  w-[98%]  h-[19rem] px-4 py-2  rounded-xl  relative -z-10 border-[3px] border-blue-500 `}>
             <div className="w-full flex items-center justify-between dark:text-dark-text ">
                 <span className="font-semibold">People You May Know</span>
                 
@@ -11,7 +11,7 @@ const Knowledge = ()=>{
             </div>
             <ul className=" flex items-center gap-2">
 
-                <li className="dark:bg-dark-second h-[15.5rem]  w-[18%]  overflow-hidden bg-light-secondary rounded-lg">
+                <li className="dark:bg-dark-second h-[15.5rem]  w-[40%] lg:w-[18%]  overflow-hidden bg-light-secondary rounded-lg">
                     <div className="w-full h-36 overflow-hidden">
                         <img src="/images/avt-2.jpg" alt="" className="w-full aspect-auto object-cover"/>
                     </div>
@@ -30,7 +30,7 @@ const Knowledge = ()=>{
                 </li>
 
 
-                <li className="dark:bg-dark-second h-[15.5rem]  w-[18%]  overflow-hidden bg-light-secondary rounded-lg">
+                <li className="dark:bg-dark-second h-[15.5rem]  w-[40%] lg:w-[18%]   overflow-hidden bg-light-secondary rounded-lg">
                     <div className="w-full h-36 overflow-hidden">
                         <img src="/images/avt-3.jpg" alt="" className="w-full aspect-auto object-cover"/>
                     </div>
@@ -50,7 +50,7 @@ const Knowledge = ()=>{
 
 
 
-                <li className="dark:bg-dark-second h-[15.5rem]  w-[18%]  overflow-hidden bg-light-secondary rounded-lg">
+                <li className="dark:bg-dark-second h-[15.5rem]  w-[40%] lg:w-[18%]   overflow-hidden bg-light-secondary rounded-lg">
                     <div className="w-full h-36 overflow-hidden">
                         <img src="/images/avt-4.jpg" alt="" className="w-full aspect-auto object-cover"/>
                     </div>
@@ -69,7 +69,7 @@ const Knowledge = ()=>{
                 </li>
 
 
-                <li className="dark:bg-dark-second h-[15.5rem]  w-[18%]  overflow-hidden bg-light-secondary rounded-lg">
+                <li className="dark:bg-dark-second h-[15.5rem] invisible lg:visible  w-[25%]  lg:w-[18%]  overflow-hidden bg-light-secondary rounded-lg">
                     <div className="w-full h-36 overflow-hidden">
                         <img src="/images/avt-5.jpg" alt="" className="w-full aspect-auto object-cover"/>
                     </div>
@@ -88,7 +88,7 @@ const Knowledge = ()=>{
                 </li>
 
                 
-                <li className="dark:bg-dark-second h-[15.5rem]  w-[18%]  overflow-hidden  bg-light-secondary rounded-lg">
+                <li className="dark:bg-dark-second h-[15.5rem]  invisible lg:visible w-[18%]  overflow-hidden  bg-light-secondary rounded-lg">
                     <div className="w-full h-36 overflow-hidden">
                         <img src="/images/avt-7.jpg" alt="" className="w-full aspect-auto object-cover"/>
                     </div>

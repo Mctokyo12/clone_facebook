@@ -26,6 +26,7 @@ const Card = ({user , sender}) => {
             }
             
         } catch (error) {
+            setLoader(false)
             console.log(error);
         }
 
@@ -41,6 +42,7 @@ const Card = ({user , sender}) => {
             const data = response.data
             setStatus(data.status)
         } catch (error) {
+            setLoader(false)
             console.log(error);
             
         }
@@ -61,6 +63,7 @@ const Card = ({user , sender}) => {
 
             setLoader(false)
         } catch (error) {
+            setLoader(false)
             console.log(error);
             
         }
@@ -78,6 +81,7 @@ const Card = ({user , sender}) => {
             setStatus(data.status)
             setcancelInvitation(data.status)
         } catch (error) {
+            setLoader(false)
             console.log(error);
             
         }
@@ -94,6 +98,7 @@ const Card = ({user , sender}) => {
             
             setStatus(data.status)
         } catch (error) {
+            setLoader(false)
             console.log(error);
         }
     }
@@ -110,9 +115,9 @@ const Card = ({user , sender}) => {
 
     return (
        
-       <li className="dark:bg-dark-second   w-[20%]  overflow-hidden bg-light-primary shadow rounded-lg">
+       <li className="dark:bg-dark-second w-[49%]  lg:w-[22%]  overflow-hidden bg-light-primary shadow rounded-lg">
             
-            <div className="w-full h-[12rem] overflow-hidden  bg-amber-300">
+            <div className="w-full h-[12rem] overflow-hidden ">
                 <img 
                     src={ 
                         user.profile_picture  == null ? 
@@ -141,7 +146,7 @@ const Card = ({user , sender}) => {
                         {
                             status == 0 ? 
                                 <div>
-                                    <div  onClick={()=>confirme()} className="flex h-10 items-center justify-center mb-1 cursor-pointer mt-1  px-2 py-2 w-full  bg-blue rounded-lg dark:bg-[#e7f3ff] dark:text-white">
+                                    <div  onClick={()=>confirme()} className="flex h-10 items-center justify-center mb-1 cursor-pointer mt-1  px-2 py-2 w-full  bg-blue rounded-lg dark:text-white">
                                         {loader ? 
                                             <PulseLoader  size={7} color='#fff'/> :
                                             <span className="text-base font-semibold text-center text-white dark:text-dark-text">
@@ -149,7 +154,7 @@ const Card = ({user , sender}) => {
                                             </span>
                                         }
                                     </div>
-                                    <div onClick={()=>DeleteInvitation()} className="flex items-center  justify-center cursor-pointer mt-1  px-2 py-2  w-full  gap bg-light-third rounded-lg dark:bg-[#e7f3ff] dark:text-white">
+                                    <div onClick={()=>DeleteInvitation()} className="flex items-center  justify-center cursor-pointer mt-1  px-2 py-2  w-full  gap bg-light-third rounded-lg dark:bg-dark-third dark:text-white">
                                         <span className="text-base  font-semibold text-gray-800 text-center dark:text-dark-text">Delete</span>
                                     </div> 
 
@@ -175,19 +180,19 @@ const Card = ({user , sender}) => {
                                     <div  onClick={()=>AddFriend()} className="flex h-10 items-center justify-center mb-1 cursor-pointer mt-1  px-2 py-2 w-full  bg-light-blue rounded-lg dark:bg-[#e7f3ff] dark:text-white">
                                         {loader ? 
                                             <PulseLoader  size={7} color='#fff'/> :
-                                            <span className="text-base font-semibold text-center text-blue dark:text-dark-text">
+                                            <span className="text-base font-semibold text-center text-blue ">
                                                 Add Friend
                                             </span>
                                         }
                                     </div> 
                                     <div className="flex items-center  justify-center cursor-pointer mt-1  px-2 py-2  w-full  gap bg-light-third rounded-lg dark:bg-[#e7f3ff] dark:text-white">
-                                        <span className="text-base font-semibold text-gray-800 text-center dark:text-dark-text">Delete</span>
+                                        <span className="text-base font-semibold text-gray-800 text-center ">Delete</span>
                                     </div> 
                                 </div>  
                             :
                         
                                 <div onClick={()=>CancelInvitation()} className="flex items-center  justify-center cursor-pointer mt-1  px-2 py-2  w-full  gap bg-light-third rounded-lg dark:bg-[#e7f3ff] dark:text-white">
-                                    <span className="text-base font-semibold text-gray-800 text-center dark:text-dark-text">Cancel</span>
+                                    <span className="text-base font-semibold text-gray-800 text-center d">Cancel</span>
                                 </div>
                             
        

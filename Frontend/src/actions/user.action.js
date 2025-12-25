@@ -1,5 +1,5 @@
 import axios from "axios";
-import { data } from "react-router";
+import { useState } from "react";
 
 export const UPDATE_PROFILE = "UPDATE_PROFILE";
 export const UPDATE_POST_PROFILE = "UPDATE_POST_PROFILE";
@@ -20,4 +20,15 @@ export const update_profile =  (data , id)=>{
     }
 }
 
+
+export const getUser = (id)=>{
+   
+    return axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/user/${id}`).then(res=>{
+        return res.data
+    }).catch(e=>{
+        return e
+    })
+  
+
+}
 

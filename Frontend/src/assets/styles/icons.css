@@ -15,7 +15,7 @@
   width: 20px;
   height: 20px;
   background-repeat: no-repeat;
-  -webkit-filter: invert(10%);
+  /* -webkit-filter: invert(10%); */
   display: inline-block;
 }
 .all_friends_icon {
