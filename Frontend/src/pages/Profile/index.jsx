@@ -51,7 +51,11 @@ const Profile = ({users , visibleHeader , FriendQuery})=>{
 
     useEffect(()=>{
 
-        axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/user/${userid}`).then(res=>{
+        axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/user/${userid}` ,{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`, 
+            }
+        }).then(res=>{
             const data = res.data;
             if(users.userid == userid){
                 data.token = !localStorage.getItem("token") ? "" : localStorage.getItem("token");

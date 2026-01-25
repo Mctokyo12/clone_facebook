@@ -17,7 +17,11 @@ const Card = ({user , sender}) => {
     
     const friends = async ()=>{
         try {
-            const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/friends/`);
+            const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/friends/`,{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                }
+            });
             const data = response.data;
             if (Array.isArray(data)) {
                 data.forEach(item=>{
@@ -38,6 +42,10 @@ const Card = ({user , sender}) => {
             const response = await axios.put(`${import.meta.env.VITE_URL_BACKEND}/api/accept-request`,{
                 "sender": sender,
                 "receiver": receiver
+            },{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                }
             })
             const data = response.data
             setStatus(data.status)
@@ -54,6 +62,10 @@ const Card = ({user , sender}) => {
             const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/addFriend`,{
                 "sender":sender,
                 "receiver": receiver
+            },{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                }
             });
             const data = response.data;
             setStatus(data.status);
@@ -74,6 +86,10 @@ const Card = ({user , sender}) => {
            const response = await axios.put(`${import.meta.env.VITE_URL_BACKEND}/api/cancel-request`,{
                 "sender":sender,
                 "receiver": receiver
+            },{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                }
             })
             const data = response.data;
             console.log(data);
@@ -92,6 +108,10 @@ const Card = ({user , sender}) => {
            const response = await axios.put(`${import.meta.env.VITE_URL_BACKEND}/api/delete-request`,{
                 "sender":sender,
                 "receiver": receiver
+            },{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                }
             })
             const data = response.data;
             console.log(data);

@@ -3,6 +3,7 @@ import { postData } from '../../functions/Friend';
 import { HashLoader } from 'react-spinners';
 import { RemoveDouble } from '../../functions/Fetch';
 import { ProfilePicture } from '../../functions/ProfilePicture';
+import axios from 'axios';
 
 const FriendUser = ({FriendQuery , userid}) => {
     const [friend , setFriend] = useState([]);
@@ -11,27 +12,21 @@ const FriendUser = ({FriendQuery , userid}) => {
     
 
     useEffect(()=>{
-        
-        try {
-            for (const item of FriendQuery) {
-                // console.log(userid);
-                
-                if(item.sender === userid){
-                    postData(`${import.meta.env.VITE_URL_BACKEND}/api/get-friend/${userid}` , "sender" , setFriend, setLoader)
-                    break;
-                }else if(item.receiver == userid){
-                    postData(`${import.meta.env.VITE_URL_BACKEND}/api/get-friend/${userid}` , "receiver" , setFriend, setLoader)
-                    break;        
-                }
-                
-                break;
-                
+        setLoader(true);
+        axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/get-friend/${userid}`,{
+            'action': 'receiver'    
+        },{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
             }
-           
-        } catch (error) {
-            console.log(error);
+        }).then(res=>{
+            if (Array.isArray(res.data) && res.data.length > 0) {
+                setFriend(prev=>[...prev , ...res.data]);
+            }
+        }).catch(e=>{
+            console.log(e);
             
-        }
+        }).finally(()=>setLoader(false))
 
     } , [FriendQuery])
 

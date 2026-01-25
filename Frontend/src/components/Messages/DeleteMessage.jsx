@@ -12,6 +12,11 @@ const DeleteMessage = ({messages, messageid , setDelete , userid}) => {
             const res  = await axios.put(`${import.meta.env.VITE_URL_BACKEND}/api/message/deleted-sender/${messageid}`,{
                 "deleted" :choose,
                 "id": userid
+            },{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                    
+                }
             })
 
             console.log(res);

@@ -1,5 +1,6 @@
 import axios from "axios"
 import { ProfilePicture } from "../../../functions/ProfilePicture"
+import { Link } from "react-router"
 axios
 const MessageItem = ({item , setIsChat , setCurrentChat , user , setCurrentUser})=>{
    
@@ -10,11 +11,19 @@ const MessageItem = ({item , setIsChat , setCurrentChat , user , setCurrentUser}
             const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/message`,{
                 "sender": user.userid,
                 "receiver":id
+            },{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                }
             });
             
 
             // on recuperer l'utilisateur avec qui nous allons chate
-            const res = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/user/${id}`);
+            const res = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/user/${id}` , {
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`, 
+                }
+            });
             setCurrentUser(res.data);
             const { data } = response;
             setCurrentChat([...data]);
@@ -28,7 +37,7 @@ const MessageItem = ({item , setIsChat , setCurrentChat , user , setCurrentUser}
     
     
     return (
-        <li onClick={()=>getChat(item.userid)}  className="notification rounded-lg px-2 py-2  hover:bg-light-secondary relative cursor-pointer dark:hover:bg-dark-third flex items-center gap-4">
+        <Link  onClick={()=>getChat(item.userid)}  className="notification rounded-lg px-2 py-2  hover:bg-light-secondary relative cursor-pointer dark:hover:bg-dark-third flex items-center gap-4">
             <div className="w-16 aspect-square  overflow-hidden rounded-full">
                 <img src={ProfilePicture(item)} alt="" srcset=""  className=" object-cover"/>
             </div>
@@ -44,7 +53,7 @@ const MessageItem = ({item , setIsChat , setCurrentChat , user , setCurrentUser}
             <span className="more h-8 cursor-pointer right-10 absolute top-1/2 -translate-y-1/2  right-2self-start  w-8 grid place-items-center rounded-full hover:bg-gray-200 dark:hover:bg-dark-third text-gray-500 dark:text-dark-text invisible">
                 <i className="bx bx-dots-horizontal-rounded text-2xl"></i>
             </span>
-        </li>
+        </Link>
     )
 }
 

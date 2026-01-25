@@ -65,6 +65,10 @@ const NotificationItem = ({notification , setError})=>{
         try {
             const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/notification/${notification.id}/read` ,{
                 'userid': currentUser.userid
+            },{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`, 
+                }
             })
             const {data} = response
             setStatus(data.status);

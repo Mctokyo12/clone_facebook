@@ -48,20 +48,20 @@ const ViewPost = ()=>{
 
 
     return(
-        <div className="flex items-start ">
+        <div className="flex items-start justify-center  max-lg:items-center">
             <Header/>
             {/* <!-- heading --> */}
                
             {/* <!-- heading--> */}
 
             {/* <!-- Main View --> */}
-            <div className="flex items-center justify-center py-2  h-screen w-full  relative ">
+            <div className="flex items-center justify-center py-2   h-screen w-full  relative ">
 
             
             
-                <div className="flex justify-between items-center mx-8 gap-14 h-[80vh] relative w-full">
+                <div className="flex justify-between  items-center   max-lg:mt-40  mx-8 gap-14 h-[80vh] relative w-full">
 
-                    <div className="flex  justify-between dark:shadow items-center   absolute top-4 left-0">
+                    <div className="flex  justify-between dark:shadow items-center  hidden lg:flex   absolute top-4 left-0">
                         <div className="flex gap-2 items-center  w-full " >
                             <Link to={"/"} className="rounded-full relative text-center grid place-items-center size-11  shadow dark:hover:bg-dark-third   dark:bg-dark-main  dark:text-white  bg-gray-200 cursor-pointer">
                                 <i className="bx bx-x text-4xl"></i>
@@ -71,7 +71,7 @@ const ViewPost = ()=>{
 
                     </div>
 
-                    <div className=" items-center md:flex justify-center gap-2     top-4  absolute  right-0">
+                    <div className=" items-center  justify-center gap-2 hidden lg:flex     top-4  absolute  right-0">
 
                         <div id="grid" className="rounded-full text-xl text-center xl:grid hidden  place-content-center h-12 w-12 hover:bg-gray-300 dark:hover:bg-dark-text/50 dark:bg-dark-third dark:text-dark-text bg-gray-200 cursor-pointer">
                             <i className='bx bxs-zoom-in text-2xl'></i> 
@@ -97,16 +97,16 @@ const ViewPost = ()=>{
                                 setCurrentItem(post.files.length-1)
                             }
                         }} 
-                        className="size-16   rounded-full flex items-center cursor-pointer justify-center dark:bg-dark-third/60  bg-light-third dark:text-white"
+                        className="size-16  max-lg:z-10  rounded-full flex items-center cursor-pointer justify-center dark:bg-dark-third/60  bg-light-third dark:text-white"
                     >
                         <i className="text-5xl bx bx-chevron-left"></i>
                     </span>
 
 
-                    <div className="w-[70%] h-[90vh]  ">
+                    <div className="lg:w-[70%]  max-lg:absolute  w-full   ">
                         {typeof post == "object" && post != null ? 
                             Array.isArray(post.files) && post.files.length > 0 ?
-                                <img src={`${import.meta.env.VITE_URL_BACKEND}/storage/${post.files[currentItem]}`} className='object-cover  block  w-[90%]' alt="" srcset="" /> : ""
+                                <img src={`${import.meta.env.VITE_URL_BACKEND}/storage/${post.files[currentItem]}`} className='object-cover  block  w-full  lg:w-[90%] ' alt="" srcset="" /> : ""
                             :""
                         }
                     </div>
@@ -118,7 +118,7 @@ const ViewPost = ()=>{
                                 setCurrentItem(0)
                             }
                         }} 
-                        className="size-16  rounded-full flex items-center justify-center dark:bg-dark-third bg-light-third dark:bg-opacity-60 cursor-pointer dark:text-white "
+                        className="size-16 max-lg:z-10  rounded-full flex items-center justify-center dark:bg-dark-third bg-light-third dark:bg-opacity-60 cursor-pointer dark:text-white "
                     >
                         <i className="text-5xl bx bx-chevron-right"></i>
                     </span>

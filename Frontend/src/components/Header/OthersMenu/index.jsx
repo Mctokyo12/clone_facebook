@@ -4,13 +4,19 @@ import Setting from './Setting';
 import DisplayAccessibility from './DisplayAccessibility';
 import { ProfilePicture } from '../../../functions/ProfilePicture';
 import { Link, useNavigate } from 'react-router';
+import axios from 'axios';
 
 const UserMenu = ({user}) => {
     const [visible , setvisible] = useState(0);
     const profile = ProfilePicture(user);
     const navigate = useNavigate()
-    const logout = ()=>{
+    const logout = async ()=>{
         if (localStorage.getItem("user")) {
+            const res = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/logout`, {
+                headers:{
+                    Authorization:`Bearer ${localStorage.getItem('token')}`
+                }
+            });
             localStorage.removeItem("user" , "");   
             navigate("/login")
         }

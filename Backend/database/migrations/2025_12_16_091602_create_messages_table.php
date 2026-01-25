@@ -19,8 +19,8 @@ return new class extends Migration
             $table->text("message")->nullable();
             $table->text("file")->nullable();
             $table->integer("is_read")->default(0);
-            $table->integer("is_reply")->nullable();
-            $table->integer("reply_to")->nullable();
+            $table->string("is_reply")->nullable();
+            $table->string("reply_to")->nullable();
             $table->integer("deleted_sender")->default(0);
             $table->integer("deleted_receiver")->default(0);
             

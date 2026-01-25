@@ -21,7 +21,11 @@ const EditPost = ({user , setEditPost , editPost , currentPost}) => {
     const getPost = async ()=>{
         setLoader(true)
         try {
-            const response = await axios.get(`${BACKEND_URL}/api/post/${currentPost}`);
+            const response = await axios.get(`${BACKEND_URL}/api/post/${currentPost}`,{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                }
+            });
             const {data} = response
             setPost(data[0])
             if (data[0].post) {

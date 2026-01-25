@@ -29,7 +29,12 @@ const Shared = ({
                 "share_type": "post"
             }
 
-            const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/post/share` , shareData);
+            const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/post/share` , shareData,{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+
+                }
+            });
             const data = response.data;
             dispatch(getPosts())
             setLoading(false);

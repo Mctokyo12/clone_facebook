@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {FaceSmileIcon, GifIcon, HandThumbUpIcon, MicrophoneIcon, PaperAirplaneIcon } from "@heroicons/react/20/solid"
 import axios from 'axios';
 
-const AddMessage = ({currentUser , user , setError}) => {
+const AddMessage = ({currentUser , user , setError , reply , setReply , messages , messageid}) => {
 
     const [content , setContent] = useState("")
     const [files , setFiles] = useState([]);
@@ -19,9 +19,25 @@ const AddMessage = ({currentUser , user , setError}) => {
             formData.append("sender" , user.userid);
             formData.append("receiver" , currentUser.userid);
             formData.append("message" , content);
+            
+            if(reply == true){
+                const chat = Array.isArray(messages) ? messages.filter((message)=> message.msgid == messageid)[0] : []
+
+                formData.append("reply" , messageid);
+                formData.append("reply_to" , chat.sender);
+
+                console.log(messageid);
+                
+
+            }
 
 
-            const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/new-message`, formData);
+            const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/new-message`, formData ,{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                    'Content-Type': 'multipart/form-data' ,
+                }
+            });
 
             console.log(response);
 
@@ -29,9 +45,10 @@ const AddMessage = ({currentUser , user , setError}) => {
             setContent("");
             setFiles([]);
             setImagesPreview([]);
+            setReply(false);
             
         } catch (error) {
-            // setError(error.data.errors)
+            setError(error.data.message)
             console.log(error);
             
         }

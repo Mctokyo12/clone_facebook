@@ -12,7 +12,8 @@ export const update_profile =  (data , id)=>{
     return (dispatch)=>{
         return axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/user/update-profile/${id}` , data , {
             headers:{
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         }).then(res => {
             dispatch({type: UPDATE_PROFILE , payload: res.data});
@@ -23,7 +24,11 @@ export const update_profile =  (data , id)=>{
 
 export const getUser = (id)=>{
    
-    return axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/user/${id}`).then(res=>{
+    return axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/user/${id}` ,{
+        headers:{
+            Authorization: `Bearer ${localStorage.getItem('token')}`,  
+        }
+    }).then(res=>{
         return res.data
     }).catch(e=>{
         return e

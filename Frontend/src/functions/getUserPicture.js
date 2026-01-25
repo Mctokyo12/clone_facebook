@@ -6,6 +6,10 @@ export const getUserPicture = async (id , isPhotos) => {
     try {
         const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/user/${id}/picture` , {
             allPhotos:isPhotos
+        },{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`,  
+            }
         });
         const data = (await response).data
     

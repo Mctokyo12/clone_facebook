@@ -15,7 +15,6 @@ import { Link } from "react-router";
 
 const HeaderProfile = ({user , visibleHeader ,setOldCoverVisble ,setVisibleProfilePicture , section})=>{
     const currentUser = useSelector((state) => state.userReducer);
-    
     const dispath = useDispatch();
     const cover =  currentUser.userid == user.userid ?  CoverPiture(currentUser) : CoverPiture(user);
     const profile = currentUser.userid == user.userid ? ProfilePicture(currentUser) : ProfilePicture(user);

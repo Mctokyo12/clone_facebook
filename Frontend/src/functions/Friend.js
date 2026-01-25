@@ -13,6 +13,11 @@ export const postData = async(url, action , callback , loader)=> {
     try {
         const response = await axios.post(url , {
             "action": action
+        },{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`,  
+
+            }
         })
         const data = response.data;
         FillArray(data , callback)

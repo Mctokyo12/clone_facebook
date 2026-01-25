@@ -9,7 +9,12 @@ import axios from "axios";
 export  const fetch = async (url , callback , setloader)=>{
     try {
       // setloader(true)
-      const response  = await axios.get(url);
+      const response  = await axios.get(url ,{
+        headers:{
+          Authorization: `Bearer ${localStorage.getItem('token')}`,  
+
+        }
+      });
       const data = response.data;
       FillArray(data , callback);
       // setloader(false)

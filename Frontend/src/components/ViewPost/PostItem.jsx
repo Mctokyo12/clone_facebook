@@ -12,7 +12,7 @@ const PostItem = ({post}) => {
 
 
     return (
-        <div className="max-h-[75%] h-[70vh] -mt-18  w-full sm:w-[85%] lg:w-[70%] xl:w-1/2 dark:bg-dark-second bg-white ">
+        <div className="max-h-[75%] h-[70vh] hidden lg:block  -mt-18  w-full sm:w-[85%] lg:w-[70%] xl:w-1/2 dark:bg-dark-second bg-white ">
             
 
             <div className="bg-white w-full h-[73vh]  scrollbar overflow-y-scroll dark:bg-dark-second shadow dark:text-dark-text font-medium ">

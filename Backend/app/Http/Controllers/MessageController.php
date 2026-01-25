@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageEvent;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Database\Query\Builder;
@@ -39,6 +40,8 @@ class MessageController extends Controller
 
         $message = "";
         $uploadeFiles = [];
+        $reply = null;
+        $reply_to = null;
 
         if($request->has('message') || $request->hasFile('files')){
 
@@ -69,14 +72,30 @@ class MessageController extends Controller
                 $message = $request->input("message");
             }
 
+            if ($request->has('reply') and $request->filled('reply')) {
+                $reply= $request->input('reply');
+            }
+
+            if ($request->has('reply_to') and $request->filled('reply_to')) {
+                $reply_to = $request->input('reply_to');
+            }
+
+
+
             $newMessage =  $newMessage =  Message::create([
                 'msgid'=>  Uuid::uuid4(),
                 'sender' => $request->input("sender"),
                 'receiver' =>$request->input("receiver"),
                 'message' => $message,
-                'file' => json_encode($uploadeFiles)
+                'file' => json_encode($uploadeFiles),
+                'is_reply'=>$reply,
+                'reply_to'=>$reply_to
             ]);    
 
+            // event();
+            // MessageEvent::dispatch($newMessage);
+            broadcast(new MessageEvent($newMessage));
+         
             return response()->json($newMessage);
        }
 
@@ -99,6 +118,15 @@ class MessageController extends Controller
         return response()->json(["status" => $result]);
 
 
+    }
+
+    public   function ReadMessage( int $id, string $msgid) 
+    {
+        $result = Message::where("msgid" , $msgid)->where('receiver' , $id) ->update([
+            'is_read'=>1
+        ]);
+
+        return response()->json(['status'=>$result]);
     }
 
     public  function DeleteMessageSender(Request $request , string $msgid) 
@@ -140,10 +168,8 @@ class MessageController extends Controller
 
     }
 
-    // public  function (Type $var = null) : Returntype
-    // {
-    //     # code...
-    // }
+
+
 
 
 }

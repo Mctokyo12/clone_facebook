@@ -5,9 +5,6 @@ import Error from '../../Errors';
 import axios from 'axios';
 import { Link } from 'react-router';
 
-
-
-
 const Right = ({userid , FriendQuery}) => {
 
     const [friendSender , setFriendSender] = useState([]);
@@ -18,16 +15,7 @@ const Right = ({userid , FriendQuery}) => {
     
 
     const [friend , setFriend] = useState([]);
-    
-    const postData = async(action)=> {
-        setLoaderInfo(true)
-        const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/get-friend/${userid}` , {
-            "action": action
-        })
-        const data = response.data;
-        FillArray(data , setFriend)
-        setLoaderInfo(false)
-    }
+
 
     error == true && setTimeout(() => {
         setError(false)
@@ -39,6 +27,10 @@ const Right = ({userid , FriendQuery}) => {
            const response = await axios.put(`${import.meta.env.VITE_URL_BACKEND}/api/delete-request`,{
                 "sender":userid,
                 "receiver": receiver
+            },{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                }
             })
             const data = response.data;
             console.log(data);
@@ -56,6 +48,10 @@ const Right = ({userid , FriendQuery}) => {
             const response = await axios.put(`${import.meta.env.VITE_URL_BACKEND}/api/accept-request`,{
                 "sender": userid,
                 "receiver": receiver
+            },{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                }
             })
             const data = response.data
             setStatus(data.status)
@@ -71,18 +67,22 @@ const Right = ({userid , FriendQuery}) => {
     useEffect(()=>{
         fetch(`${import.meta.env.VITE_URL_BACKEND}/api/get-sender/${userid}` , setFriendSender , setLoader); // personne qui envoie des demandes
         
-        for (const item of FriendQuery) {
-            if(item.sender === userid){
-                postData("sender")
-                break;
-            }else if(item.receiver === userid){
-                postData("receiver")
-                console.log(friend);    
-                break;           
+        setLoaderInfo(true);
+        axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/get-friend/${userid}`,{
+            'action': 'receiver'    
+        },{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
             }
-            break;
+        }).then(res=>{
+            if (Array.isArray(res.data) && res.data.length > 0) {
+                setFriend(prev=>[...prev , ...res.data]);
+            }
+        }).catch(e=>{
+            console.log(e);
             
-        }
+        }).finally(()=>setLoaderInfo(false))
+        
     } , [FriendQuery])
 
 

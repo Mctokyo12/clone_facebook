@@ -27,7 +27,7 @@ const Friend = ({userid , FriendQuery})=>{
 
 
                 {/* <!-- sidebar friend --> */}
-                    <div className=" hidden lg:block fixed  top-16 h-screen overflow-y-auto py-3 px-3 w-[25%] dark:bg-dark-second dark:text-dark-text  bg-white text-gray-500 ">
+                    <div className=" hidden lg:block fixed  scrollbar top-16 h-screen overflow-y-auto py-3 px-3 w-[25%] dark:bg-dark-second dark:text-dark-text  bg-white text-gray-500 ">
                         <div className="flex justify-between items-center w-full">
                             <h3 className="font-semibold text-xl">Friends</h3>
                             <span className="rounded-full text-xl relative text-center grid place-items-center py-2 px-2  mr-2 shadow  dark:hover:bg-dark-third dark:bg-transparent dark:text-dark-text  bg-gray-200 cursor-pointer">

@@ -31,7 +31,11 @@ const Header = () => {
    const {channel} = useEchoModel("App.Models.User",user.id);
     const getNotification  = async ()=>{
         try {
-            const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/notification/${user.userid}`);
+            const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/notification/${user.userid}`,{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                }
+            });
             const {data} = response;
             FillArray(data ,setNotifications)
             
@@ -43,7 +47,11 @@ const Header = () => {
 
     const getUnreadNotification = async ()=>{
         try {
-            const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/unread-notification/${user.userid}`);
+            const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/unread-notification/${user.userid}`,{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                }
+            });
             const {data} = response;
             
             

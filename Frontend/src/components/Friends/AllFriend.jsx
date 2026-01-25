@@ -15,6 +15,10 @@ const AllFriend = ({userid , FriendQuery}) => {
         try {
             const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/get-friend/${userid}` , {
                 "action": action
+            },{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+                }
             })
             const data = response.data;
             FillArray(data , setFriend)
@@ -50,7 +54,7 @@ const AllFriend = ({userid , FriendQuery}) => {
             <div className="flex items-start flex-col   relative mt-30 lg:mt-16">
 
                 {/* <!-- sidebar friend --> */}
-                    <div className={`fixed  ${showProfile ? "max-lg:hidden" :"" } w-full  h-screen overflow-y-auto py-3 px-2 lg:w-[25%] dark:bg-dark-second dark:text-dark-text  bg-white text-gray-500 `}>
+                    <div className={`fixed  ${showProfile ? "max-lg:hidden" :"" } w-full scrollbar  h-screen overflow-y-auto py-3 px-2 lg:w-[25%] dark:bg-dark-second dark:text-dark-text  bg-white text-gray-500 `}>
                         <div className="flex justify-between  flex-col w-full border-b-2 border-b-light-third dark:border-dark-third">
                             <div className='flex  items-center my-3 ' >
                                 <Link to={'/friends/'}    className="rounded-full text-xl relative text-center grid place-items-center py-2 px-2  mr-2 shadow  dark:hover:bg-dark-third dark:bg-transparent dark:text-dark-text  bg-gray-200 cursor-pointer">
@@ -82,7 +86,7 @@ const AllFriend = ({userid , FriendQuery}) => {
                                     :
                                     friend.length != 0 ? 
                                         RemoveDouble(friend).map((user , index)=>(
-                                            <Link to={`profile/${user.userid}`} key={index}  onClick={()=>setShowProfile(true)} className="notification rounded-lg px-2 py-2  hover:bg-light-secondary relative cursor-pointer dark:bg-dark-third flex items-center gap-4">
+                                            <Link to={`profile/${user.userid}`} key={index}  onClick={()=>setShowProfile(true)} className="notification rounded-lg px-2 py-2  hover:bg-light-secondary relative cursor-pointer dark:bg-dark-third dark:hover:bg-dark-text/25 flex items-center gap-4">
                                                 <div className=" w-16 aspect-square  bg-amber-200 overflow-hidden rounded-full">
                                                     <img 
                                                         src={ 

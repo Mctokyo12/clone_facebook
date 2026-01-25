@@ -1,19 +1,57 @@
 import React, { useState } from 'react';
 import { CheckUrl } from '../../functions/Fetch';
 import ImagePreview from './ImagePreview';
+import axios from 'axios';
+import dayjs from 'dayjs';
 
-const MessageLeft = ({item , setMessageId , setReply , setDeleted  }) => {
+export const readMessage = async (id , msgid)=>{
+    const res =  await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/message/${id}/read/${msgid}`);
+    console.log(res.data);
+}
+
+
+const MessageLeft = ({item , setMessageId , messages,setReply , setDeleted, currentUser , user}) => {
     
     const [leftMenuVisible ,setLeftMenuVisible] = useState(false);
     const images  = Array.isArray(item.file) ? item.file : [];
     const [showPostPopup , setshowPostPopup] = useState(false);
+    const date = dayjs(item.created_at);
+    
+    const reply = item.is_reply;
+    let MessageReply = [];
+    let SenderMessage = "";
+
+    if (reply !== null) {
+        MessageReply = Array.isArray(messages) ? messages.filter((message) => message.msgid == reply) : []
+    }
+
+    if (item.reply_to !== null) {
+        if (item.reply_to == user.userid) {
+            SenderMessage = "Vous"
+        }else{
+            SenderMessage = `${currentUser.firstname} ${currentUser.lastname}`
+        }
+    }
+
+
 
     return (
 
         <div className="self-start w-full relative  message-item">
 
-            <div  className={`bg-light-secondary hover:last:grid self-start relative dark:bg-dark-third  float-left    px-4 max-w-[calc(100%-100px)] text-justify py-2  rounded-br-2xl rounded-tr-2xl rounded-tl-2xl text-gray-500 dark:text-dark-text`}>
-                <p className="font-normal text-wrap ">{item.message}</p>
+            <div  className={`bg-light-secondary hover:last:grid self-start relative dark:bg-dark-third  float-left    px-2 max-w-[calc(100%-100px)] text-justify py-1  rounded-br-2xl rounded-tr-2xl rounded-tl-2xl text-gray-500 dark:text-dark-text`}>
+
+                {
+                    MessageReply.length > 0 ? 
+                        <div className='border-l-4 flex flex-col border-l-blue bg-blue-300/20 text-white` cursor-pointer rounded-md py-1 w-full px-2'>
+                            <span className='text-blue  font-semibold'>{SenderMessage}</span>
+                            <span>{MessageReply[0].message}</span>
+                        </div>  
+                    : 
+                    ""
+                }
+
+               <p className="font-normal text-wrap ">{item.message}</p>
                 <div id="more-cmt" className="py-1 px-1 self-center more-icon  -right-8 top-1/2 -translate-y-1/2   absolute  rounded-full grid place-items-center cursor-pointer dark:text-dark-text dark:hover:bg-dark-third  hover:bg-gray-200  invisible text-gray-500">
                     <span className="bx bx-dots-horizontal-rounded text-xl" onClick={()=>setLeftMenuVisible(!leftMenuVisible)}></span>
                 </div>
@@ -70,6 +108,10 @@ const MessageLeft = ({item , setMessageId , setReply , setDeleted  }) => {
 
                     </div>
                 }
+
+                <span className='flex items-center gap-0.5 -mt-1 float-end ml-20 '>
+                    <span className='text-[11px]  font-light '>{date.format('HH:mm')}</span>
+                </span>
             </div> 
 
             <ImagePreview 

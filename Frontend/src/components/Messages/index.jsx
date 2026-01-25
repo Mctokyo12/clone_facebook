@@ -10,12 +10,15 @@ import dayjs from "dayjs"
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { ProfilePicture } from "../../functions/ProfilePicture"
 import AddMessage from "./AddMessage"
-import MessageLeft from "./MessageLeft"
+import MessageLeft, { readMessage } from "./MessageLeft"
 import MessageRight from "./MessageRight"
 import EditMessage from "./EditMessage"
 import ReplyMessage from "./ReplyMessage"
 import DeleteMessage from "./DeleteMessage"
-dayjs.extend(relativeTime);
+import { useEcho } from "@laravel/echo-react"
+import { Link, useParams } from "react-router"
+import ChatBox from "./ChatBox"
+
 
 
 
@@ -31,11 +34,22 @@ const Messages = ({user})=>{
     const [isChat , setIsChat] = useState(null);
     const [messageid , setMessageId] = useState(null)
     const [deleted  , setDeleted] = useState(false);
+    dayjs.extend(relativeTime)
+
+
+  
+
 
     useEffect(()=>{
+        if(!currentUser) return;
+
         setLoader(true);
         axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/get-friend/${user.userid}` , {
             "action": "reicever"
+        },{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`,  
+            }
         }).then(res=>{
             const {data} = res
             console.log(res);
@@ -50,6 +64,7 @@ const Messages = ({user})=>{
         }).finally(()=>{
             setLoader(false);
         })
+
     },[])
 
 
@@ -57,16 +72,6 @@ const Messages = ({user})=>{
     
 
     
-    
-
-    
-    
-
-
-
-
-
-
 
     return(
         <>
@@ -171,7 +176,7 @@ const Messages = ({user})=>{
                                             </div>
                                             <div className="flex  gap-0 flex-col">
                                                 <span className=" font-semibold text-lg">{currentUser.firstname} {currentUser.lastname}</span>
-                                                <span className="  font-semibold text-[12px]  text-gray-500">{dayjs(currentUser.created_at).fromNow()}</span>
+                                                {/* <span className="  font-semibold text-[12px]  text-gray-500">{dayjs(currentUser.created_at).fromNow()}</span> */}
                                             </div>
                                         </div>
                                         
@@ -186,7 +191,7 @@ const Messages = ({user})=>{
                                 {/* end header message */}
 
                                 {/* main message */}
-                                    <div className=" pt-4 w-full px-4">
+                                    {/* <div className=" pt-4 w-full px-4">
                                         <div className="overflow-y-scroll h-100 chat-box scrollbar">
                                             <div className="flex items-center gap-2.5  flex-col">
                                                 <div className="w-28 aspect-square flex-1/3  overflow-hidden rounded-full">
@@ -200,14 +205,14 @@ const Messages = ({user})=>{
                                                 <span className="text-blue">En savoir Plus</span>
                                             </p>
 
-                                            {/* display message */}
+                                           
                                             <div className="mt-4 flex mb-4  gap-1 flex-col">
                                                 {currentChat.map((item , index)=>(
                                             
                                                     item.receiver == user.userid ? 
-                                                        <MessageLeft key={index} item={item} setMessageId={setMessageId} setReply={setReply} setDeleted ={setDeleted}/>
+                                                        <MessageLeft key={index} item={item} setMessageId={setMessageId} setReply={setReply} messages={currentChat} currentUser={currentUser} user={user} setDeleted ={setDeleted}/>
                                                     :  
-                                                        <MessageRight key={index} item={item} setEdit={setEdit} setMessageId={setMessageId} setDeleted ={setDeleted}/>
+                                                        <MessageRight key={index} item={item} messages={currentChat} setEdit={setEdit} setMessageId={setMessageId} setReply={setReply} currentUser={currentUser} user={user} setDeleted ={setDeleted}/>
                                                     
                                             
                                                 ))}
@@ -217,11 +222,22 @@ const Messages = ({user})=>{
 
                                         </div>
 
-                                    </div>
+                                    </div>  */}
+
+                                    <ChatBox 
+                                        currentChat={currentChat} 
+                                        setDeleted={setDeleted} 
+                                        setEdit={setEdit} 
+                                        setMessageId={setMessageId} 
+                                        setReply={setReply} 
+                                        user={user} 
+                                        currentUser={currentUser}
+                                    />
+
                                 {/* end main message */}
 
                                 {/* bottom message */}
-                                    <AddMessage currentUser={currentUser} user={user} setError={setError}/>
+                                    <AddMessage currentUser={currentUser} user={user} setError={setError} reply={reply} messages={currentChat} setReply={setReply} messageid={messageid}/>
                                 {/* end bottom message */}
 
                                 {/* edit message */}
@@ -320,7 +336,8 @@ const Messages = ({user})=>{
               <Error error={error} setError={setError}/>
             }
 
-            {deleted &&  <DeleteMessage setDelete={setDeleted} messages={currentChat} messageid={messageid} userid={user.userid}/>}
+            {deleted &&  <DeleteMessage setDelete={setDeleted} messageid={messageid} messages={currentChat} userid={user.userid}/>}
+
         </>
 
     )

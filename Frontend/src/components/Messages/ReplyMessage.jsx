@@ -4,6 +4,14 @@ const ReplyMessage = ({messages , reply , messageid , setReply , currentUser}) =
 
     const chat = Array.isArray(messages) ? messages.filter((message) => message.msgid == messageid)[0] : []
     const [content , setContent] =  chat.message ? useState(chat.message) : useState("");
+    let SenderMessage = "";
+
+    if (chat.sender == currentUser.userid) {
+        SenderMessage = `${currentUser.firstname} ${currentUser.lastname}`
+    }else{
+        SenderMessage = "Vous"
+    }
+
 
 
     return (
@@ -16,7 +24,7 @@ const ReplyMessage = ({messages , reply , messageid , setReply , currentUser}) =
             </div>
 
             <div className="w-full  flex items-center justify-between py-2">
-                <span className=" font-semibold  text-lg">Repondre a {currentUser.lastname}{currentUser.firstname}</span>
+                <span className=" font-semibold  text-lg">Repondre a {SenderMessage}</span>
                 <span className="bx bx-x text-4xl cursor-pointer" onClick={()=>setReply(false)}></span>
             </div>
             

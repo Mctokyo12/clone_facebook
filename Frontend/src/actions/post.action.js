@@ -16,7 +16,8 @@ export const add_post =  (data)=>{
     return (dispatch)=>{
         return axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/post` , data , {
             headers:{
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data' ,
+                Authorization: `Bearer ${localStorage.getItem('token')}`,  
             }
         }).then(res => {
             dispatch({type: ADD_POST , payload: res.data});
@@ -28,7 +29,9 @@ export const edit_post = (data , id)=>{
     return (dispatch)=>{
         return axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/post/update/${id}` , data ,{
             headers:{
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${localStorage.getItem('token')}`,  
+
             }
         }).then(res =>{
             dispatch({type: EDIT_POST, payload: res.data})
@@ -38,7 +41,11 @@ export const edit_post = (data , id)=>{
 
 export const delete_post = (id)=>{
     return (dispatch)=>{
-        return axios.delete(`${import.meta.env.VITE_URL_BACKEND}/api/post/delete/${id}` ).then(res =>{
+        return axios.delete(`${import.meta.env.VITE_URL_BACKEND}/api/post/delete/${id}` , {
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`,  
+            }
+        }).then(res =>{
             dispatch({type: DELETE_POST, payload: id});
         })
     }
@@ -46,7 +53,11 @@ export const delete_post = (id)=>{
 
 export const getPosts = ()=>{
     return (dispatch) =>{
-        return axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/post`).then(res =>{
+        return axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/post` ,{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`,  
+            }
+        }).then(res =>{
             dispatch({type: GET_POST , payload: res.data});
         })
     }
@@ -54,7 +65,11 @@ export const getPosts = ()=>{
 
 export const get_likes = ()=>{
     return (dispatch)=>{
-        return axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/post/like`).then(res=>{
+        return axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/post/like`,{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`,  
+            }
+        }).then(res=>{
             dispatch({type: GET_LIKE , payload: res.data})
         })
 
@@ -63,7 +78,11 @@ export const get_likes = ()=>{
 
 export const like_post = (data , id)=>{
     return (dispatch)=>{
-        return axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/post/like/${id}` , data).then(res=>{
+        return axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/post/like/${id}` , data , {
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`,  
+            }
+        }).then(res=>{
             dispatch({type: LIKE_POST , payload: data})
         })
 
@@ -72,7 +91,11 @@ export const like_post = (data , id)=>{
 
 export const add_comment = (data)=>{
     return (dispatch)=>{
-        return axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/post/comment` , data).then(res=>{
+        return axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/post/comment` , data ,{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`,  
+            }
+        }).then(res=>{
             dispatch({type: ADD_COMMENT , payload: res.data})
         })
 
@@ -81,7 +104,11 @@ export const add_comment = (data)=>{
 
 export const edit_comment = (data , id)=>{
     return (dispatch)=>{
-        return axios.put(`${import.meta.env.VITE_URL_BACKEND}/api/post/comment/${id}` , data).then(res=>{
+        return axios.put(`${import.meta.env.VITE_URL_BACKEND}/api/post/comment/${id}` , data , {
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`,  
+            }
+        }).then(res=>{
             dispatch({type: EDIT_COMMENT , payload: data})
         })
 
@@ -90,7 +117,11 @@ export const edit_comment = (data , id)=>{
 
 export const delete_comment = (data , id)=>{
     return (dispatch)=>{
-        return axios.delete(`${import.meta.env.VITE_URL_BACKEND}/api/post/comment/delete/${id}`).then(res=>{
+        return axios.delete(`${import.meta.env.VITE_URL_BACKEND}/api/post/comment/delete/${id}` , {
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`,  
+            }
+        }).then(res=>{
             dispatch({type: DELETE_COMMENT , payload: data})
         })
 

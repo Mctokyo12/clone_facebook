@@ -11,12 +11,19 @@ const EditMessage = ({messages , edit , messageid , setEdit }) => {
         try {
             const res = await axios.put(`${import.meta.env.VITE_URL_BACKEND}/api/message/edit/${messageid}` , {
                 'content' : content
+            },{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  
+
+                }
             });
 
             if (res.data.status == 1) {
                 setEdit(false)
                 setContent("");
             }
+
+        
 
         } catch (error) {
             console.log(error);
