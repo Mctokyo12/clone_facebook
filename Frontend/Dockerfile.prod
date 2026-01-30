@@ -1,0 +1,19 @@
+FROM node:25-alpine3.22 AS Builder
+
+RUN apk update && apk upgrade
+WORKDIR /app
+COPY ./ /app/
+
+RUN npm install
+
+RUN npm run build
+
+FROM ngnix:stable-alpine AS Production
+
+COPY --from=Builder /app/dist /usr/share/ngnix/html
+
+# Copier une configuration Nginx personnalisée (voir étape 2)
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

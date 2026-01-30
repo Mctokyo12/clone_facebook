@@ -1,0 +1,60 @@
+services:
+  backend:
+    build: 
+      context: ./Backend
+      dockerfile: Dockerfile
+      target: prod
+    container_name: mybackend
+    ports:
+      -8000:8000
+    depends_on:
+      - db
+    volumes:
+      -laravel_storage:/var/www/html/public/storage
+    networks:
+      - laravel-network
+  
+  frontend:
+    build: 
+      context: ./Frontend
+      dockerfile: Dockerfile.prod
+      target: prod
+    container_name: myfrontend
+    ports:
+      -"80:80"
+    depends_on:
+      - backend
+    networks:
+      - laravel-network:
+  
+  db:
+    image: mysql:oraclelinux9
+    restart: unless-stopped
+    container_name: mydb
+    env_file:
+      - .env
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD={DB_PASSWORD}
+    ports:
+      -"3306:3306"
+    networks:
+      - laravel-network
+    volumes:
+      -db_data:/var/lib/mysql/data
+
+networks:
+  laravel-network:
+
+volumes:
+  db_data:
+  laravel_storage:
+
+
+
+
+    
+  
+      
+    
