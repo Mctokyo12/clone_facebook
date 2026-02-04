@@ -29,11 +29,13 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html/
 
 COPY ./ /var/www/html/
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY entrypoint.sh  /usr/local/bin/entrypoint.sh
+RUN chmod +x  /usr/local/bin/entrypoint.sh
 
 RUN composer install --no-dev --optimize-autoloader
 
-EXPOSE 8000
 
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+EXPOSE 9000
+
+CMD ["php-fpm"]

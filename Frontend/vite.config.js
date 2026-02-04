@@ -8,4 +8,5 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  base: '/', // Assure que les liens dans l'index.html commencent par /assets/ et non assets/
 })
